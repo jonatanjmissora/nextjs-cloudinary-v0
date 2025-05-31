@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
-import type { Folder, File } from "@/types"
+import type { Folder, File } from "@/lib/types"
 
 interface FileExplorerProps {
   folder: Folder | null
@@ -133,7 +133,7 @@ export function FileExplorer({
         description: `${selectedFiles.size} archivo${selectedFiles.size !== 1 ? "s" : ""} copiado${selectedFiles.size !== 1 ? "s" : ""} al portapapeles`,
         className: "bg-green-50 border-green-200 text-green-800",
       })
-      
+
       console.log("Toast should appear now", selectedFiles.size);
     }
   }
@@ -277,11 +277,10 @@ export function FileExplorer({
               <ChevronRight size={14} className="text-muted-foreground" />
               <button
                 onClick={() => handleFolderChange(pathFolder)}
-                className={`hover:text-primary transition-colors ${
-                  index === breadcrumbPath.length - 1
+                className={`hover:text-primary transition-colors ${index === breadcrumbPath.length - 1
                     ? "font-medium text-foreground"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 {pathFolder.name}
               </button>
@@ -359,9 +358,8 @@ export function FileExplorer({
               {sortedFiles.map((file) => (
                 <div
                   key={file.id}
-                  className={`group border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors relative ${
-                    selectedFiles.has(file.id) ? "bg-accent/30 border-primary" : ""
-                  }`}
+                  className={`group border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors relative ${selectedFiles.has(file.id) ? "bg-accent/30 border-primary" : ""
+                    }`}
                 >
                   {/* Checkbox en la esquina superior izquierda */}
                   <div className="absolute top-2 left-2 z-10">
@@ -445,9 +443,8 @@ export function FileExplorer({
                   {sortedFiles.map((file) => (
                     <tr
                       key={file.id}
-                      className={`border-t border-border hover:bg-accent/50 group ${
-                        selectedFiles.has(file.id) ? "bg-accent/30" : ""
-                      }`}
+                      className={`border-t border-border hover:bg-accent/50 group ${selectedFiles.has(file.id) ? "bg-accent/30" : ""
+                        }`}
                     >
                       <td className="p-3">
                         <Checkbox

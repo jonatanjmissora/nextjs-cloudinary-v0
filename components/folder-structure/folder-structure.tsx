@@ -13,7 +13,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import type { Folder } from "@/types"
+import type { Folder } from "@/lib/types"
 
 interface FolderStructureProps {
   onSelectFolder: (folder: Folder) => void
@@ -164,9 +164,8 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
     return childFolders.map((folder) => (
       <div key={folder.id} className="select-none">
         <div
-          className={`flex items-center py-1 px-2 rounded-md cursor-pointer group ${
-            selectedFolder?.id === folder.id ? "bg-accent" : "hover:bg-accent/50"
-          }`}
+          className={`flex items-center py-1 px-2 rounded-md cursor-pointer group ${selectedFolder?.id === folder.id ? "bg-accent" : "hover:bg-accent/50"
+            }`}
           onClick={() => handleSelectFolder(folder)}
         >
           <button

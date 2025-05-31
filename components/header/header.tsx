@@ -13,8 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ModeToggle } from "@/components/mode-toggle"
-import type { Folder, File } from "@/types"
+import { ModeToggle } from "@/components/header/header-mode-toggle"
+import type { Folder, File } from "@/lib/types"
 
 interface HeaderProps {
   searchQuery: string
