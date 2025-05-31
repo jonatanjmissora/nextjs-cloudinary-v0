@@ -4,20 +4,11 @@ import { useState } from "react"
 import { FileIcon, FileText, FileImage, FileIcon as FilePresentation, MoreVertical, Download, Trash2, Share2, Info, ChevronRight, Home, Pencil, Play, Music, Archive, Code, Type, Palette, AlertTriangle, Copy } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogDescription,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import type { Folder, CustomFile } from "@/lib/types"
 import { FileActions } from "./file-explorer-actions"
 import { getFileIcon } from "@/lib/get-file-icon"
+import { RenameFileDialog, DeleteFileDialog, BulkDeleteDialog } from "./file-explorer-dialog"
 
 interface FileExplorerProps {
   folder: Folder | null
@@ -443,87 +434,29 @@ export function FileExplorer({
         )}
       </div>
 
-      {/* Diálogo para renombrar archivo */}
-      <Dialog open={isRenameFileDialogOpen} onOpenChange={setIsRenameFileDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Renombrar archivo</DialogTitle>
-          </DialogHeader>
-          <Input
-            value={newFileName}
-            onChange={(e) => setNewFileName(e.target.value)}
-            placeholder="Nuevo nombre"
-            autoFocus
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsRenameFileDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSaveRename}>Guardar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Diálogos */}
+      <RenameFileDialog
+        isOpen={isRenameFileDialogOpen}
+        onOpenChange={setIsRenameFileDialogOpen}
+        fileToRename={fileToRename}
+        newFileName={newFileName}
+        onNewFileNameChange={setNewFileName}
+        onSave={handleSaveRename}
+      />
 
-      {/* Diálogo de confirmación para eliminar archivo individual */}
-      <Dialog open={isDeleteFileDialogOpen} onOpenChange={setIsDeleteFileDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              Confirmar eliminación
-            </DialogTitle>
-            <DialogDescription>
-              {fileToDelete && (
-                <>
-                  ¿Estás seguro de que quieres eliminar el archivo <strong>"{fileToDelete.file.name}"</strong>?
-                  <br />
-                  <br />
-                  <span className="text-sm text-muted-foreground">
-                    <strong>Esta acción no se puede deshacer.</strong>
-                  </span>
-                </>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteFileDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button variant="destructive" onClick={handleConfirmDeleteFile}>
-              Eliminar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteFileDialog
+        isOpen={isDeleteFileDialogOpen}
+        onOpenChange={setIsDeleteFileDialogOpen}
+        fileToDelete={fileToDelete}
+        onConfirm={handleConfirmDeleteFile}
+      />
 
-      {/* Diálogo de confirmación para eliminación masiva */}
-      <Dialog open={isBulkDeleteDialogOpen} onOpenChange={setIsBulkDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              Confirmar eliminación masiva
-            </DialogTitle>
-            <DialogDescription>
-              ¿Estás seguro de que quieres eliminar <strong>{selectedFiles.size}</strong> archivo
-              {selectedFiles.size !== 1 ? "s" : ""} seleccionado{selectedFiles.size !== 1 ? "s" : ""}?
-              <br />
-              <br />
-              <span className="text-sm text-muted-foreground">
-                <strong>Esta acción no se puede deshacer.</strong>
-              </span>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsBulkDeleteDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button variant="destructive" onClick={handleConfirmBulkDelete}>
-              Eliminar {selectedFiles.size} archivo{selectedFiles.size !== 1 ? "s" : ""}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <BulkDeleteDialog
+        isOpen={isBulkDeleteDialogOpen}
+        onOpenChange={setIsBulkDeleteDialogOpen}
+        selectedFilesCount={selectedFiles.size}
+        onConfirm={handleConfirmBulkDelete}
+      />
     </div>
   )
 }
