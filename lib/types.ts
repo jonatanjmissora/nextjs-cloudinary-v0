@@ -1,4 +1,4 @@
-export interface File {
+export interface CustomFile {
   id: string
   name: string
   type: string
@@ -10,5 +10,5 @@ export interface Folder {
   id: string
   name: string
   parentId: string | null
-  files: File[]
+  files: CustomFile[]
 }

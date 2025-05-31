@@ -4,7 +4,7 @@ import { useState } from "react"
 import { FileIcon, FileText, FileImage, FileIcon as FilePresentation, MoreVertical, Download, Trash2, Share2, Info, ChevronRight, Home, Pencil, Play, Music, Archive, Code, Type, Palette, AlertTriangle, Copy } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,9 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
-import type { Folder, File } from "@/lib/types"
+import type { Folder, CustomFile } from "@/lib/types"
+import { FileActions } from "./file-explorer-actions"
+import { getFileIcon } from "@/lib/get-file-icon"
 
 interface FileExplorerProps {
   folder: Folder | null
@@ -39,8 +41,8 @@ export function FileExplorer({
   const [isRenameFileDialogOpen, setIsRenameFileDialogOpen] = useState(false)
   const [isDeleteFileDialogOpen, setIsDeleteFileDialogOpen] = useState(false)
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false)
-  const [fileToRename, setFileToRename] = useState<{ file: File; folderId: string } | null>(null)
-  const [fileToDelete, setFileToDelete] = useState<{ file: File; folderId: string } | null>(null)
+  const [fileToRename, setFileToRename] = useState<{ file: CustomFile; folderId: string } | null>(null)
+  const [fileToDelete, setFileToDelete] = useState<{ file: CustomFile; folderId: string } | null>(null)
   const [newFileName, setNewFileName] = useState("")
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
   const { toast } = useToast()
@@ -53,14 +55,15 @@ export function FileExplorer({
     if (!currentFolder) return []
 
     const path: Folder[] = []
-    let current = currentFolder
+    let current: Folder | null = currentFolder
     let safetyCounter = 0 // Evitar bucles infinitos
     const maxDepth = 20
 
     while (current && safetyCounter < maxDepth) {
       path.unshift(current)
-      if (current.parentId) {
-        const parentFolder = folders.find((f) => f.id === current.parentId)
+      const parentId: string | null = current.parentId
+      if (parentId) {
+        const parentFolder: Folder | undefined = folders.find((f) => f.id === parentId)
         current = parentFolder || null
       } else {
         current = null
@@ -73,13 +76,13 @@ export function FileExplorer({
 
   const breadcrumbPath = buildBreadcrumbPath(currentFolder)
 
-  const handleRenameFile = (file: File, folderId: string) => {
+  const handleRenameFile = (file: CustomFile, folderId: string) => {
     setFileToRename({ file, folderId })
     setNewFileName(file.name)
     setIsRenameFileDialogOpen(true)
   }
 
-  const handleDeleteFile = (file: File, folderId: string) => {
+  const handleDeleteFile = (file: CustomFile, folderId: string) => {
     setFileToDelete({ file, folderId })
     setIsDeleteFileDialogOpen(true)
   }
@@ -233,37 +236,6 @@ export function FileExplorer({
     }
   })
 
-  const getFileIcon = (type: string) => {
-    switch (type) {
-      case "pdf":
-        return <FileText className="h-10 w-10 text-red-500" />
-      case "word":
-        return <FileText className="h-10 w-10 text-blue-600" />
-      case "excel":
-        return <FileText className="h-10 w-10 text-green-600" />
-      case "powerpoint":
-        return <FilePresentation className="h-10 w-10 text-orange-500" />
-      case "image":
-        return <FileImage className="h-10 w-10 text-purple-500" />
-      case "video":
-        return <Play className="h-10 w-10 text-red-600" />
-      case "audio":
-        return <Music className="h-10 w-10 text-pink-500" />
-      case "archive":
-        return <Archive className="h-10 w-10 text-yellow-600" />
-      case "code":
-        return <Code className="h-10 w-10 text-green-500" />
-      case "text":
-        return <Type className="h-10 w-10 text-gray-500" />
-      case "design":
-        return <Palette className="h-10 w-10 text-indigo-500" />
-      case "font":
-        return <Type className="h-10 w-10 text-purple-600" />
-      default:
-        return <FileIcon className="h-10 w-10 text-gray-400" />
-    }
-  }
-
   const isAllSelected = sortedFiles.length > 0 && sortedFiles.every((file) => selectedFiles.has(file.id))
   const isIndeterminate = sortedFiles.some((file) => selectedFiles.has(file.id)) && !isAllSelected
 
@@ -314,9 +286,7 @@ export function FileExplorer({
                 <Checkbox
                   checked={isAllSelected}
                   onCheckedChange={handleSelectAll}
-                  ref={(ref) => {
-                    if (ref) ref.indeterminate = isIndeterminate
-                  }}
+                  indeterminate={isIndeterminate}
                 />
 
                 <span className="pl-2 text-sm text-muted-foreground">todos</span>
@@ -428,9 +398,7 @@ export function FileExplorer({
                       <Checkbox
                         checked={isAllSelected}
                         onCheckedChange={handleSelectAll}
-                        ref={(ref) => {
-                          if (ref) ref.indeterminate = isIndeterminate
-                        }}
+                        indeterminate={isIndeterminate}
                       />
                     </th>
                     <th className="text-left p-3 font-medium">Nombre</th>
@@ -560,47 +528,4 @@ export function FileExplorer({
   )
 }
 
-interface FileActionsProps {
-  file: File
-  folderId: string
-  onRenameFile: (file: File, folderId: string) => void
-  onDeleteFile: (file: File, folderId: string) => void
-}
 
-function FileActions({ file, folderId, onRenameFile, onDeleteFile }: FileActionsProps) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
-          <MoreVertical size={16} />
-          <span className="sr-only">Acciones</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => onRenameFile(file, folderId)}>
-          <Pencil size={14} className="mr-2" />
-          <span>Renombrar</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Download size={14} className="mr-2" />
-          <span>Descargar</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Share2 size={14} className="mr-2" />
-          <span>Compartir</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Info size={14} className="mr-2" />
-          <span>Detalles</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="text-destructive focus:text-destructive"
-          onClick={() => onDeleteFile(file, folderId)}
-        >
-          <Trash2 size={14} className="mr-2" />
-          <span>Eliminar</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
