@@ -6,20 +6,8 @@ import { Header } from "@/components/header/header"
 import { FileExplorer } from "@/components/file-explorer/file-explorer"
 import type { Folder } from "@/lib/types"
 import { initialFolders } from "@/lib/mock-folders"
-import { ModeToggle } from "./header/header-mode-toggle"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { LogOut, Settings, User } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-
+import MainHeader from "./main-header"
+import { MainFooter } from "./mani-footer"
 
 export function Dashboard() {
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
@@ -88,54 +76,5 @@ export function Dashboard() {
       </div>
       <MainFooter />
     </div>
-  )
-}
-
-const MainHeader = () => {
-  return (
-    <header className="p-6 w-full flex justify-between items-center">
-      <span className="text-xl font-bold tracking-wider">My Cloudinary</span>
-      <div className="flex justify-center items-center gap-8">
-        <ModeToggle />
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-9 w-9 rounded-full border">
-              <User className="size-12" strokeWidth={3} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex justify-between gap-4">
-              <span>Perfil</span>
-              <User className="mr-2 h-4 w-4" />
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex justify-between gap-4">
-              <span>Configuración</span>
-              <LogOut className="mr-2 h-4 w-4" />
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex justify-between gap-4">
-              <span>Cerrar sesión</span>
-              <Settings className="mr-2 h-4 w-4" />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </header>
-  )
-}
-
-const MainFooter = () => {
-
-  const year = new Date().getFullYear()
-
-  return (
-    <footer className="p-4 w-full flex justify-end items-center gap-4 text-xs font font-semibold tracking-wider">
-      <a href="https://jonatan-missora.vercel.app/" target="_blank">
-        KatoDev {year}
-      </a>
-    </footer>
   )
 }
