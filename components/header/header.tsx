@@ -13,8 +13,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ModeToggle } from "@/components/header/header-mode-toggle"
+import { ModeToggle } from "@/components/theme-toggle"
 import type { Folder, File } from "@/lib/types"
+import { getFileType } from "@/lib/utils"
 
 interface HeaderProps {
   searchQuery: string
@@ -40,60 +41,6 @@ export function Header({
   onFoldersUpdate,
 }: HeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const getFileType = (fileName: string): string => {
-    const extension = fileName.split(".").pop()?.toLowerCase()
-
-    switch (extension) {
-      case "pdf":
-        return "pdf"
-      case "doc":
-      case "docx":
-        return "word"
-      case "xls":
-      case "xlsx":
-        return "excel"
-      case "ppt":
-      case "pptx":
-        return "powerpoint"
-      case "jpg":
-      case "jpeg":
-      case "png":
-      case "gif":
-      case "svg":
-        return "image"
-      case "mp4":
-      case "avi":
-      case "mov":
-        return "video"
-      case "mp3":
-      case "wav":
-        return "audio"
-      case "zip":
-      case "rar":
-      case "7z":
-        return "archive"
-      case "js":
-      case "ts":
-      case "css":
-      case "html":
-      case "json":
-      case "sql":
-        return "code"
-      case "txt":
-        return "text"
-      case "fig":
-      case "sketch":
-      case "ase":
-        return "design"
-      case "ttf":
-      case "otf":
-      case "woff":
-        return "font"
-      default:
-        return "file"
-    }
-  }
 
   const formatFileSize = (size: number): string => {
     if (size < 1024) return `${size} B`
@@ -143,9 +90,9 @@ export function Header({
   return (
     <header className="border-b border-border p-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          {/* Barra de búsqueda más pequeña */}
-          <div className="relative w-80">
+        <div className="flex items-center justify-center space-x-3 w-full">
+          {/* Barra de búsqueda */}
+          <div className="relative w-1/2">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               placeholder="Buscar en Drive"

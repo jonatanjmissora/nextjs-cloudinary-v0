@@ -7,7 +7,7 @@ import { FileExplorer } from "@/components/file-explorer/file-explorer"
 import type { Folder } from "@/lib/types"
 import { initialFolders } from "@/lib/mock-folders"
 import MainHeader from "./main-header"
-import { MainFooter } from "./mani-footer"
+import { MainFooter } from "./main-footer"
 
 export function Dashboard() {
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)

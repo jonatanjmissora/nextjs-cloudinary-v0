@@ -1,5 +1,4 @@
-import { ModeToggle } from "./header/header-mode-toggle"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ModeToggle } from "./theme-toggle"
 import { Button } from "@/components/ui/button"
 import { LogOut, Settings, User } from "lucide-react"
 import {
