@@ -219,9 +219,7 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
 
   return (
     <div className="w-64 h-full border-r border-border flex flex-col bg-background">
-      <div className="p-4 flex items-center justify-between border-b border-border">
-        <h2 className="font-semibold text-lg">Mi Drive</h2>
-      </div>
+
       <div className="flex-1 overflow-y-auto p-2">{renderFolderTree(null)}</div>
 
       {/* Diálogo para crear carpeta */}
