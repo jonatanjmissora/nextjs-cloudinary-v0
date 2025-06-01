@@ -2,15 +2,13 @@
 
 import { useState } from "react"
 import { Home } from 'lucide-react'
-import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
 import type { Folder, CustomFile } from "@/lib/types"
-import { FileActions } from "./file-explorer-actions"
-import { getFileIcon } from "@/lib/get-file-icon"
 import { RenameFileDialog, DeleteFileDialog, BulkDeleteDialog } from "./file-explorer-dialog"
 import FileExplorerBreadcrumb from "./file-explorer-breadcrumb"
 import { FileExplorerFilesSelection } from "./file-explorer-files-selection"
 import { FileExplorerGridFiles } from "./file-explorer-grid-files"
+import { FileExplorerLineFiles } from "./file-explorer-line-files"
 
 interface FileExplorerProps {
   folder: Folder | null
@@ -186,84 +184,51 @@ export function FileExplorer({
 
       {/* Contenido de archivos */}
       <div className="flex-1 px-6 overflow-auto">
-        {sortedFiles.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <p>
-              {searchQuery
-                ? `No se encontraron archivos que coincidan con "${searchQuery}"`
-                : "No hay archivos en esta carpeta"}
-            </p>
-          </div>
-        ) 
-        : view === "grid" 
-          ? (
-          <div className="space-y-4">
-            {/* Checkbox para seleccionar todos en vista de cuadrícula */}
-            <FileExplorerFilesSelection 
-              sortedFiles={sortedFiles as unknown as CustomFile[]} 
-              selectedFiles={selectedFiles} 
-              setSelectedFiles={setSelectedFiles} 
-              setIsBulkDeleteDialogOpen={setIsBulkDeleteDialogOpen}
-            />
 
-            <FileExplorerGridFiles 
-              sortedFiles={sortedFiles} 
-              selectedFiles={selectedFiles} 
-              onFileSelect={handleFileSelect} 
-              currentFolderId={currentFolder.id} 
-              onRenameFile={handleRenameFile}
-              onDeleteFile={handleDeleteFile}
-            />
-          </div>
-        ) 
-        : (
-          <div className="space-y-4">
-            {/* Barra de acciones para vista de lista */}
-            <div className="border rounded-md overflow-hidden">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-muted/50">
-                  <th className="text-left p-3 font-medium"></th>
-                    <th className="text-left p-3 font-medium">Nombre</th>
-                    <th className="text-left p-3 font-medium hidden md:table-cell">Última modificación</th>
-                    <th className="text-left p-3 font-medium hidden md:table-cell">Tamaño</th>
-                    <th className="p-3 w-10"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedFiles.map((file) => (
-                    <tr
-                      key={file.id}
-                      className={`border-t border-border hover:bg-accent/50 group ${selectedFiles.has(file.id) ? "bg-accent/30" : ""
-                        }`}
-                    >
-                      <td className="p-3">
-                        <Checkbox
-                          checked={selectedFiles.has(file.id)}
-                          onCheckedChange={(checked) => handleFileSelect(file.id, checked as boolean)}
-                        />
-                      </td>
-                      <td className="p-3 flex items-center">
-                        <div className="mr-3">{getFileIcon(file.type)}</div>
-                        <span title={file.name}>{file.name}</span>
-                      </td>
-                      <td className="p-3 hidden md:table-cell text-muted-foreground">{file.lastModified}</td>
-                      <td className="p-3 hidden md:table-cell text-muted-foreground">{file.size}</td>
-                      <td className="p-3">
-                        <FileActions
-                          file={file}
-                          folderId={currentFolder.id}
-                          onRenameFile={handleRenameFile}
-                          onDeleteFile={handleDeleteFile}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        {sortedFiles.length === 0 
+            /* No hay archivos */
+          ? <div className="text-center py-12 text-muted-foreground">
+              <p>
+                {searchQuery
+                  ? `No se encontraron archivos que coincidan con "${searchQuery}"`
+                  : "No hay archivos en esta carpeta"}
+              </p>
             </div>
-          </div>
-        )}
+
+          : <div className="space-y-4">
+              /* Seleccion de archivos */
+              <FileExplorerFilesSelection 
+                sortedFiles={sortedFiles as unknown as CustomFile[]} 
+                selectedFiles={selectedFiles} 
+                setSelectedFiles={setSelectedFiles} 
+                setIsBulkDeleteDialogOpen={setIsBulkDeleteDialogOpen}
+              />
+            
+              {
+                view === "grid" 
+
+                  /* Contenido de archivos en Grilla */
+                  ? <FileExplorerGridFiles 
+                      sortedFiles={sortedFiles} 
+                      selectedFiles={selectedFiles} 
+                      onFileSelect={handleFileSelect} 
+                      currentFolderId={currentFolder.id} 
+                      onRenameFile={handleRenameFile}
+                      onDeleteFile={handleDeleteFile}
+                    />
+
+                    /* Contenido de archivos en linea */
+                  : <FileExplorerLineFiles 
+                      sortedFiles={sortedFiles} 
+                      selectedFiles={selectedFiles} 
+                      onFileSelect={handleFileSelect} 
+                      currentFolderId={currentFolder.id} 
+                      onRenameFile={handleRenameFile}
+                      onDeleteFile={handleDeleteFile}
+                    />
+              }
+            </div>
+        }
       </div>
 
       {/* Diálogos */}
@@ -292,4 +257,3 @@ export function FileExplorer({
     </div>
   )
 }
-
