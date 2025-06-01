@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { FileIcon, FileText, FileImage, FileIcon as FilePresentation, MoreVertical, Download, Trash2, Share2, Info, ChevronRight, Home, Pencil, Play, Music, Archive, Code, Type, Palette, AlertTriangle, Copy } from 'lucide-react'
+import { Trash2, Home, Copy } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
@@ -41,32 +41,6 @@ export function FileExplorer({
 
   // Buscar la carpeta actual en la lista actualizada de carpetas
   const currentFolder = folder ? folders.find((f) => f.id === folder.id) || folder : null
-
-  // Función para construir la ruta de breadcrumb
-  // const buildBreadcrumbPath = (currentFolder: Folder | null): Folder[] => {
-  //   if (!currentFolder) return []
-
-  //   const path: Folder[] = []
-  //   let current: Folder | null = currentFolder
-  //   let safetyCounter = 0 // Evitar bucles infinitos
-  //   const maxDepth = 20
-
-  //   while (current && safetyCounter < maxDepth) {
-  //     path.unshift(current)
-  //     const parentId: string | null = current.parentId
-  //     if (parentId) {
-  //       const parentFolder: Folder | undefined = folders.find((f) => f.id === parentId)
-  //       current = parentFolder || null
-  //     } else {
-  //       current = null
-  //     }
-  //     safetyCounter++
-  //   }
-
-  //   return path
-  // }
-
-  // const breadcrumbPath = buildBreadcrumbPath(currentFolder)
 
   const handleRenameFile = (file: CustomFile, folderId: string) => {
     setFileToRename({ file, folderId })
@@ -241,31 +215,6 @@ export function FileExplorer({
         sortedFiles={sortedFiles as unknown as File[]}
         searchQuery={searchQuery}
       />
-      {/* <div className="p-4 border-b border-border flex justify-between items-center">
-        <div className="flex items-center space-x-2 text-sm">
-          {breadcrumbPath.map((pathFolder, index) => (
-            <div key={pathFolder.id} className="flex items-center space-x-2">
-              <ChevronRight size={14} className="text-muted-foreground" />
-              <button
-                onClick={() => handleFolderChange(pathFolder)}
-                className={`hover:text-primary transition-colors ${index === breadcrumbPath.length - 1
-                    ? "font-medium text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                  }`}
-              >
-                {pathFolder.name}
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="text-xs text-muted-foreground">
-            {sortedFiles.length} {sortedFiles.length === 1 ? "archivo" : "archivos"}
-            {searchQuery &&
-              ` (filtrado de ${currentFolder.files.length} total${currentFolder.files.length !== 1 ? "es" : ""})`}
-          </div>
-        </div>
-      </div> */}
 
       {/* Contenido de archivos */}
       <div className="flex-1 px-6 overflow-auto">
@@ -277,7 +226,9 @@ export function FileExplorer({
                 : "No hay archivos en esta carpeta"}
             </p>
           </div>
-        ) : view === "grid" ? (
+        ) 
+        : view === "grid" 
+          ? (
           <div className="space-y-4">
             {/* Checkbox para seleccionar todos en vista de cuadrícula */}
             <div className="min-h-12 flex justify-between items-center space-x-2">
@@ -360,7 +311,8 @@ export function FileExplorer({
               ))}
             </div>
           </div>
-        ) : (
+        ) 
+        : (
           <div className="space-y-4">
             {/* Barra de acciones para vista de lista */}
             {selectedFiles.size > 0 && (
