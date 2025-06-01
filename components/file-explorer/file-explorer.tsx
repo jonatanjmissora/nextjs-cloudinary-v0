@@ -196,7 +196,7 @@ export function FileExplorer({
             </div>
 
           : <div className="space-y-4">
-              /* Seleccion de archivos */
+              {/* Seleccion de archivos */}
               <FileExplorerFilesSelection 
                 sortedFiles={sortedFiles as unknown as CustomFile[]} 
                 selectedFiles={selectedFiles} 
