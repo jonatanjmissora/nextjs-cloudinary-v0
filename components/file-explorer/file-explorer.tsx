@@ -9,6 +9,7 @@ import type { Folder, CustomFile } from "@/lib/types"
 import { FileActions } from "./file-explorer-actions"
 import { getFileIcon } from "@/lib/get-file-icon"
 import { RenameFileDialog, DeleteFileDialog, BulkDeleteDialog } from "./file-explorer-dialog"
+import FileExplorerBreadcrumb from "./file-explorer-breadcrumb"
 
 interface FileExplorerProps {
   folder: Folder | null
@@ -42,30 +43,30 @@ export function FileExplorer({
   const currentFolder = folder ? folders.find((f) => f.id === folder.id) || folder : null
 
   // Función para construir la ruta de breadcrumb
-  const buildBreadcrumbPath = (currentFolder: Folder | null): Folder[] => {
-    if (!currentFolder) return []
+  // const buildBreadcrumbPath = (currentFolder: Folder | null): Folder[] => {
+  //   if (!currentFolder) return []
 
-    const path: Folder[] = []
-    let current: Folder | null = currentFolder
-    let safetyCounter = 0 // Evitar bucles infinitos
-    const maxDepth = 20
+  //   const path: Folder[] = []
+  //   let current: Folder | null = currentFolder
+  //   let safetyCounter = 0 // Evitar bucles infinitos
+  //   const maxDepth = 20
 
-    while (current && safetyCounter < maxDepth) {
-      path.unshift(current)
-      const parentId: string | null = current.parentId
-      if (parentId) {
-        const parentFolder: Folder | undefined = folders.find((f) => f.id === parentId)
-        current = parentFolder || null
-      } else {
-        current = null
-      }
-      safetyCounter++
-    }
+  //   while (current && safetyCounter < maxDepth) {
+  //     path.unshift(current)
+  //     const parentId: string | null = current.parentId
+  //     if (parentId) {
+  //       const parentFolder: Folder | undefined = folders.find((f) => f.id === parentId)
+  //       current = parentFolder || null
+  //     } else {
+  //       current = null
+  //     }
+  //     safetyCounter++
+  //   }
 
-    return path
-  }
+  //   return path
+  // }
 
-  const breadcrumbPath = buildBreadcrumbPath(currentFolder)
+  // const breadcrumbPath = buildBreadcrumbPath(currentFolder)
 
   const handleRenameFile = (file: CustomFile, folderId: string) => {
     setFileToRename({ file, folderId })
@@ -233,7 +234,14 @@ export function FileExplorer({
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Breadcrumb */}
-      <div className="p-4 border-b border-border flex justify-between items-center">
+      <FileExplorerBreadcrumb
+        folders={folders}
+        currentFolder={currentFolder}
+        handleFolderChange={handleFolderChange}
+        sortedFiles={sortedFiles as unknown as File[]}
+        searchQuery={searchQuery}
+      />
+      {/* <div className="p-4 border-b border-border flex justify-between items-center">
         <div className="flex items-center space-x-2 text-sm">
           {breadcrumbPath.map((pathFolder, index) => (
             <div key={pathFolder.id} className="flex items-center space-x-2">
@@ -257,7 +265,7 @@ export function FileExplorer({
               ` (filtrado de ${currentFolder.files.length} total${currentFolder.files.length !== 1 ? "es" : ""})`}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Contenido de archivos */}
       <div className="flex-1 px-6 overflow-auto">
