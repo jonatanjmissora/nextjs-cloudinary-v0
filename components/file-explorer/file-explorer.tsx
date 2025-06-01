@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Trash2, Home, Copy } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { Home } from 'lucide-react'
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
 import type { Folder, CustomFile } from "@/lib/types"
@@ -10,6 +9,8 @@ import { FileActions } from "./file-explorer-actions"
 import { getFileIcon } from "@/lib/get-file-icon"
 import { RenameFileDialog, DeleteFileDialog, BulkDeleteDialog } from "./file-explorer-dialog"
 import FileExplorerBreadcrumb from "./file-explorer-breadcrumb"
+import { FileExplorerFilesSelection } from "./file-explorer-files-selection"
+import { FileExplorerGridFiles } from "./file-explorer-grid-files"
 
 interface FileExplorerProps {
   folder: Folder | null
@@ -92,26 +93,6 @@ export function FileExplorer({
     }
   }
 
-  // Manejar copia de archivos seleccionados
-  const handleCopySelectedFiles = () => {
-    if (selectedFiles.size > 0) {
-      // Aquí iría la lógica real de copia
-      // Por ahora solo mostramos el toast
-      toast({
-        title: "Archivos copiados",
-        description: `${selectedFiles.size} archivo${selectedFiles.size !== 1 ? "s" : ""} copiado${selectedFiles.size !== 1 ? "s" : ""} al portapapeles`,
-        className: "bg-green-50 border-green-200 text-green-800",
-      })
-
-      console.log("Toast should appear now", selectedFiles.size);
-    }
-  }
-
-  // Manejar eliminación masiva de archivos
-  const handleBulkDelete = () => {
-    setIsBulkDeleteDialogOpen(true)
-  }
-
   const handleConfirmBulkDelete = () => {
     if (currentFolder && selectedFiles.size > 0) {
       // Crear una copia actualizada de las carpetas sin los archivos eliminados
@@ -148,16 +129,6 @@ export function FileExplorer({
       newSelectedFiles.delete(fileId)
     }
     setSelectedFiles(newSelectedFiles)
-  }
-
-  // Seleccionar/deseleccionar todos los archivos
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      const allFileIds = new Set(sortedFiles.map((file) => file.id))
-      setSelectedFiles(allFileIds)
-    } else {
-      setSelectedFiles(new Set())
-    }
   }
 
   // Limpiar selección cuando cambie de carpeta
@@ -202,9 +173,6 @@ export function FileExplorer({
     }
   })
 
-  const isAllSelected = sortedFiles.length > 0 && sortedFiles.every((file) => selectedFiles.has(file.id))
-  const isIndeterminate = sortedFiles.some((file) => selectedFiles.has(file.id)) && !isAllSelected
-
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Breadcrumb */}
@@ -231,127 +199,31 @@ export function FileExplorer({
           ? (
           <div className="space-y-4">
             {/* Checkbox para seleccionar todos en vista de cuadrícula */}
-            <div className="min-h-12 flex justify-between items-center space-x-2">
-              <div>
-                <Checkbox
-                  checked={isAllSelected}
-                  onCheckedChange={handleSelectAll}
-                  indeterminate={isIndeterminate}
-                />
+            <FileExplorerFilesSelection 
+              sortedFiles={sortedFiles as unknown as CustomFile[]} 
+              selectedFiles={selectedFiles} 
+              setSelectedFiles={setSelectedFiles} 
+              setIsBulkDeleteDialogOpen={setIsBulkDeleteDialogOpen}
+            />
 
-                <span className="pl-2 text-sm text-muted-foreground">todos</span>
-
-                {selectedFiles.size > 0 && (
-                  <span className="pl-10 text-sm text-muted-foreground">
-                    ({selectedFiles.size}) seleccionado
-                    {selectedFiles.size !== 1 ? "s" : ""}
-                  </span>
-                )}
-              </div>
-
-              {selectedFiles.size > 0 && (
-                <div className="flex items-center justify-center gap-4">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    title="Copiar archivos seleccionados"
-                    onClick={handleCopySelectedFiles}
-                    className="hover:bg-green-100 hover:text-green-700"
-                  >
-                    <Copy size={16} />
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    title="Eliminar archivos seleccionados"
-                    onClick={handleBulkDelete}
-                    className="hover:bg-red-100 hover:text-red-700"
-                  >
-                    <Trash2 size={16} />
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {sortedFiles.map((file) => (
-                <div
-                  key={file.id}
-                  className={`group border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors relative ${selectedFiles.has(file.id) ? "bg-accent/30 border-primary" : ""
-                    }`}
-                >
-                  {/* Checkbox en la esquina superior izquierda */}
-                  <div className="absolute top-2 left-2 z-10">
-                    <Checkbox
-                      checked={selectedFiles.has(file.id)}
-                      onCheckedChange={(checked) => handleFileSelect(file.id, checked as boolean)}
-                      className="bg-background border-2"
-                    />
-                  </div>
-
-                  <div className="flex justify-center mb-3 mt-4">{getFileIcon(file.type)}</div>
-                  <div className="text-center">
-                    <p className="font-medium truncate" title={file.name}>
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {file.lastModified} · {file.size}
-                    </p>
-                  </div>
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <FileActions
-                      file={file}
-                      folderId={currentFolder.id}
-                      onRenameFile={handleRenameFile}
-                      onDeleteFile={handleDeleteFile}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <FileExplorerGridFiles 
+              sortedFiles={sortedFiles} 
+              selectedFiles={selectedFiles} 
+              onFileSelect={handleFileSelect} 
+              currentFolderId={currentFolder.id} 
+              onRenameFile={handleRenameFile}
+              onDeleteFile={handleDeleteFile}
+            />
           </div>
         ) 
         : (
           <div className="space-y-4">
             {/* Barra de acciones para vista de lista */}
-            {selectedFiles.size > 0 && (
-              <div className="flex justify-end items-center gap-4 py-2">
-                <span className="text-sm text-muted-foreground">
-                  ({selectedFiles.size}) seleccionado{selectedFiles.size !== 1 ? "s" : ""}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  title="Copiar archivos seleccionados"
-                  onClick={handleCopySelectedFiles}
-                  className="hover:bg-green-100 hover:text-green-700"
-                >
-                  <Copy size={16} />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  title="Eliminar archivos seleccionados"
-                  onClick={handleBulkDelete}
-                  className="hover:bg-red-100 hover:text-red-700"
-                >
-                  <Trash2 size={16} />
-                </Button>
-              </div>
-            )}
-
             <div className="border rounded-md overflow-hidden">
               <table className="w-full">
                 <thead>
                   <tr className="bg-muted/50">
-                    <th className="text-left p-3 font-medium w-12">
-                      <Checkbox
-                        checked={isAllSelected}
-                        onCheckedChange={handleSelectAll}
-                        indeterminate={isIndeterminate}
-                      />
-                    </th>
+                  <th className="text-left p-3 font-medium"></th>
                     <th className="text-left p-3 font-medium">Nombre</th>
                     <th className="text-left p-3 font-medium hidden md:table-cell">Última modificación</th>
                     <th className="text-left p-3 font-medium hidden md:table-cell">Tamaño</th>
@@ -420,5 +292,4 @@ export function FileExplorer({
     </div>
   )
 }
-
 
