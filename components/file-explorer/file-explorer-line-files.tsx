@@ -31,13 +31,14 @@ interface FileExplorerLineFilesProps {
                     {sortedFiles.map((file) => (
                       <tr
                         key={file.id}
+                        onClick={() => onFileSelect(file.id, !selectedFiles.has(file.id))}
                         className={`border-t border-border hover:bg-accent/50 group ${selectedFiles.has(file.id) ? "bg-accent/30" : ""
                           }`}
                       >
                         <td className="p-3">
                           <Checkbox
                             checked={selectedFiles.has(file.id)}
-                            onCheckedChange={(checked) => onFileSelect(file.id, checked as boolean)}
+                            // onCheckedChange={(checked) => onFileSelect(file.id, checked as boolean)}
                           />
                         </td>
                         <td className="p-3 flex items-center">

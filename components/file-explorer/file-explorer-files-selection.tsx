@@ -29,7 +29,7 @@ interface FileExplorerFilesSelectionProps {
         toast({
           title: "Archivos copiados",
           description: `${selectedFiles.size} archivo${selectedFiles.size !== 1 ? "s" : ""} copiado${selectedFiles.size !== 1 ? "s" : ""} al portapapeles`,
-          className: "bg-green-800 border-green-200 text-white",
+          className: "bg-green-800 text-white",
         })
   
         console.log("Toast should appear now", selectedFiles.size);
