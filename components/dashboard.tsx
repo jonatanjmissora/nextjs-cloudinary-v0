@@ -8,6 +8,7 @@ import type { Folder } from "@/lib/types"
 import { initialFolders } from "@/lib/mock-folders"
 import MainHeader from "./main-header"
 import { MainFooter } from "./main-footer"
+import { CldImage } from "next-cloudinary"
 
 
 
@@ -113,11 +114,31 @@ export function Dashboard() {
                   //   onSelectFolder={handleSelectFolder}
                   //   onFoldersUpdate={handleFoldersUpdate}
                   // />
-                  <p>{JSON.stringify(assets)}</p>
+                  <ImagesContainer assets={assets} />
           }
         </div>
       </div>
       <MainFooter />
+    </div>
+  )
+}
+
+const ImagesContainer = ({assets}: {assets: any[]}) => {
+  return (
+    <div className="grid-container">
+      {assets.map((asset) => (
+          <CldImage
+          src={asset.public_id}
+          alt={asset.display_name}
+          width="500"
+          height="500"
+          crop={{
+            type: "auto",
+            source: true
+        }}
+          className={""}
+        />
+      ))}
     </div>
   )
 }

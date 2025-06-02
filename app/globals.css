@@ -58,3 +58,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+.grid-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.grid-container img {
+  border-radius: 0.5rem;
+  transition: transform 0.25s;
+}
+
+.grid-container img:hover {
+  transform: scale(1.05);
+}

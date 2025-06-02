@@ -13,7 +13,7 @@ export async function GET(request: Request) {
         const searchTerm = searchParams.get('search') || ''
         
         const data = await cloudinary.search
-            .expression('folder:my_first_assets')
+            .expression(searchTerm)
             .execute()
         
         return NextResponse.json(data.resources)
