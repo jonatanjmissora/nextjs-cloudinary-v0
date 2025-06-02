@@ -4,13 +4,45 @@ import { useState, useCallback, useEffect } from "react"
 import { FolderStructure } from "@/components/folder-structure/folder-structure"
 import { Header } from "@/components/header/header"
 import { FileExplorer } from "@/components/file-explorer/file-explorer"
-import type { Folder } from "@/lib/types"
+import type { CloudinaryAsset, Folder } from "@/lib/types"
 import { initialFolders } from "@/lib/mock-folders"
 import MainHeader from "./main-header"
 import { MainFooter } from "./main-footer"
 import { CldImage } from "next-cloudinary"
 
-
+const getAssetsFolders = (data: CloudinaryAsset[]): Record<string, string[]> => {
+  const folders = new Map<string, string[]>();
+  
+  data.forEach(asset => {
+    if (asset.asset_folder) {
+      console.log(asset.asset_folder)
+      // Separar la ruta en partes
+        const parts = asset.asset_folder.split('/');
+        
+        // Si hay más de una parte, significa que hay subcarpetas
+        if (parts.length > 1) {
+          const rootFolder = parts[0];
+          const subFolder = parts.slice(1).join('/');
+          
+          // Si no existe la entrada para la carpeta raíz, crearla
+          if (!folders.has(rootFolder)) {
+            folders.set(rootFolder, []);
+          }
+          
+          // Agregar la subcarpeta si no existe
+          if (!folders.get(rootFolder)?.includes(subFolder)) {
+            folders.get(rootFolder)?.push(subFolder);
+          }
+        }
+        else {
+          
+        }
+      }
+  });
+  
+  // Convertir el Map a un objeto
+  return Object.fromEntries(folders.entries());
+}
 
 export function Dashboard() {
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
@@ -19,7 +51,8 @@ export function Dashboard() {
   const [sortBy, setSortBy] = useState<"name" | "date" | "size">("name")
   const [folders, setFolders] = useState<Folder[]>(initialFolders)
 
-  const [assets, setAssets] = useState<any[]>([])
+  const [assets, setAssets] = useState<CloudinaryAsset[]>([])
+  const [assetsFolders, setAssetsFolder] = useState<Record<string, string[]>>({})
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(true)
@@ -49,7 +82,7 @@ export function Dashboard() {
     [folders],
   )
 
-  const onHandleNewUpload = (asset: any) => {
+  const onHandleNewUpload = (asset: CloudinaryAsset) => {
     setAssets(prev => [asset, ...prev])
   }
 
@@ -58,10 +91,12 @@ export function Dashboard() {
       const res = await fetch(`/api/assets?${searchTerm}`)
       const data = await res.json()
       setAssets(data)
+      const folders = getAssetsFolders(data)
+      console.log(folders)
       setError("")
-    } catch (error) {
-      console.log(error.message)
-      setError(error.message)
+    } catch (error: unknown) {
+      console.log(error instanceof Error ? error.message : String(error))
+      setError(error instanceof Error ? error.message : String(error))
       setAssets([])
     }
     finally{
@@ -123,7 +158,7 @@ export function Dashboard() {
   )
 }
 
-const ImagesContainer = ({assets}: {assets: any[]}) => {
+const ImagesContainer = ({assets}: {assets: CloudinaryAsset[]}) => {
   return (
     <div className="grid-container">
       {assets.map((asset) => (
