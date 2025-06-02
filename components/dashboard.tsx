@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { FolderStructure } from "@/components/folder-structure/folder-structure"
 import { Header } from "@/components/header/header"
 import { FileExplorer } from "@/components/file-explorer/file-explorer"
@@ -9,12 +9,19 @@ import { initialFolders } from "@/lib/mock-folders"
 import MainHeader from "./main-header"
 import { MainFooter } from "./main-footer"
 
+
+
 export function Dashboard() {
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [view, setView] = useState<"grid" | "list">("grid")
   const [sortBy, setSortBy] = useState<"name" | "date" | "size">("name")
   const [folders, setFolders] = useState<Folder[]>(initialFolders)
+
+  const [assets, setAssets] = useState<any[]>([])
+  const [searchTerm, setSearchTerm] = useState<string>("")
+  const [error, setError] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(true)
 
   // Usar useCallback para evitar recreaciones innecesarias de la función
   const handleFoldersUpdate = useCallback(
@@ -41,6 +48,31 @@ export function Dashboard() {
     [folders],
   )
 
+  const onHandleNewUpload = (asset: any) => {
+    setAssets(prev => [asset, ...prev])
+  }
+
+  const getData = async() => {
+    try {
+      const res = await fetch(`/api/assets?${searchTerm}`)
+      const data = await res.json()
+      setAssets(data)
+      setError("")
+    } catch (error) {
+      console.log(error.message)
+      setError(error.message)
+      setAssets([])
+    }
+    finally{
+      setLoading(false)
+    }
+  }
+
+  useEffect( () => {
+    getData()
+  }, [searchTerm])
+
+
   return (
     <div className="flex flex-col h-screen bg-background">
       <MainHeader />
@@ -62,16 +94,27 @@ export function Dashboard() {
             folders={folders}
             selectedFolder={selectedFolder}
             onFoldersUpdate={handleFoldersUpdate}
+            onHandleNewUpload={onHandleNewUpload}
           />
-          <FileExplorer
-            folder={selectedFolder}
-            searchQuery={searchQuery}
-            view={view}
-            sortBy={sortBy}
-            folders={folders}
-            onSelectFolder={handleSelectFolder}
-            onFoldersUpdate={handleFoldersUpdate}
-          />
+          {
+            loading 
+              ? <p>Loading...</p> 
+              
+              : error 
+                  ? <p>Error: {error}</p>
+                
+                  :
+                  // <FileExplorer
+                  //   folder={selectedFolder}
+                  //   searchQuery={searchQuery}
+                  //   view={view}
+                  //   sortBy={sortBy}
+                  //   folders={folders}
+                  //   onSelectFolder={handleSelectFolder}
+                  //   onFoldersUpdate={handleFoldersUpdate}
+                  // />
+                  <p>{JSON.stringify(assets)}</p>
+          }
         </div>
       </div>
       <MainFooter />

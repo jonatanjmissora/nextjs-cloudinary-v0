@@ -1,20 +1,12 @@
 "use client"
 
+import { CldUploadWidget } from "next-cloudinary"
+
 import { useRef, type ChangeEvent } from "react"
-import { Search, User, Upload, Grid, List, SortAsc, Calendar, HardDrive } from "lucide-react"
+import { Search, Upload, Grid, List, SortAsc, Calendar, HardDrive } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { ModeToggle } from "@/components/theme-toggle"
-import type { Folder, File } from "@/lib/types"
+import type { Folder, CustomFile } from "@/lib/types"
 import { getFileType } from "@/lib/utils"
 
 interface HeaderProps {
@@ -27,6 +19,7 @@ interface HeaderProps {
   folders: Folder[]
   selectedFolder: Folder | null
   onFoldersUpdate: (folders: Folder[]) => void
+  onHandleNewUpload: any
 }
 
 export function Header({
@@ -39,6 +32,7 @@ export function Header({
   folders,
   selectedFolder,
   onFoldersUpdate,
+  onHandleNewUpload,
 }: HeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -53,7 +47,7 @@ export function Header({
     const files = event.target.files
     if (!files || !selectedFolder) return
 
-    const newFiles: File[] = Array.from(files).map((file) => ({
+    const newFiles: CustomFile[] = Array.from(files).map((file) => ({
       id: `file-${Date.now()}-${Math.random()}`,
       name: file.name,
       type: getFileType(file.name),
@@ -103,7 +97,8 @@ export function Header({
           </div>
 
           {/* Botón de subir archivos con texto */}
-          <Button
+          <UploadButton onHandleNewUpload={onHandleNewUpload}/>
+          {/* <Button
             variant="outline"
             onClick={handleUploadClick}
             disabled={!selectedFolder}
@@ -112,7 +107,7 @@ export function Header({
           >
             <Upload size={18} />
             <span>Subir archivos</span>
-          </Button>
+          </Button> */}
 
           {/* Input oculto para seleccionar archivos */}
           <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileUpload} accept="*/*" />
@@ -169,5 +164,33 @@ export function Header({
         </div>
       </div>
     </header>
+  )
+}
+
+
+const UploadButton = ({onHandleNewUpload}: any) => {
+  return (
+    <CldUploadWidget
+      uploadPreset="my-cloudinary"
+      onSuccess={result => {
+          console.log(result)
+          onHandleNewUpload(result.info)
+      }}
+      onQueuesEnd={(result, { widget}) => {
+          widget.close()
+      }}
+      >
+      {({ open }) => {
+          function handleOnClick() {
+              open()
+          }
+          return (
+              <button 
+                  onClick={handleOnClick}
+                  className="new-button">+ New
+              </button>
+          )
+      }}
+  </CldUploadWidget>
   )
 }
