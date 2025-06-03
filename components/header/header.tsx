@@ -51,8 +51,12 @@ export function Header({
       id: `file-${Date.now()}-${Math.random()}`,
       name: file.name,
       type: getFileType(file.name),
-      size: formatFileSize(file.size),
+      size: file.size,
       lastModified: "Ahora",
+      format: file.name.split('.').pop()?.toLowerCase() || '',
+      secureUrl: '', 
+      width: 0, 
+      height: 0,
     }))
 
     // Actualizar la carpeta seleccionada con los nuevos archivos
@@ -98,16 +102,6 @@ export function Header({
 
           {/* Botón de subir archivos con texto */}
           <UploadButton onHandleNewUpload={onHandleNewUpload}/>
-          {/* <Button
-            variant="outline"
-            onClick={handleUploadClick}
-            disabled={!selectedFolder}
-            title={!selectedFolder ? "Selecciona una carpeta primero" : "Subir archivo"}
-            className="flex items-center space-x-2"
-          >
-            <Upload size={18} />
-            <span>Subir archivos</span>
-          </Button> */}
 
           {/* Input oculto para seleccionar archivos */}
           <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileUpload} accept="*/*" />
@@ -168,7 +162,7 @@ export function Header({
 }
 
 
-const UploadButton = ({onHandleNewUpload}: any) => {
+const UploadButton = ({onHandleNewUpload, selectedFolder}: any) => {
   return (
     <CldUploadWidget
       uploadPreset="my-cloudinary"
@@ -185,10 +179,15 @@ const UploadButton = ({onHandleNewUpload}: any) => {
               open()
           }
           return (
-              <button 
-                  onClick={handleOnClick}
-                  className="new-button">+ New
-              </button>
+            <Button
+            variant="outline"
+            onClick={handleOnClick}
+            title={!selectedFolder ? "Selecciona una carpeta primero" : "Subir archivo"}
+            className="flex items-center space-x-2"
+          >
+            <Upload size={18} />
+            <span>Subir archivos</span>
+          </Button>
           )
       }}
   </CldUploadWidget>

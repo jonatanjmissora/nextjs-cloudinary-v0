@@ -1,9 +1,13 @@
 export interface CustomFile {
-  id: string
-  name: string
-  type: string
-  size: string
-  lastModified: string
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  lastModified: string;
+  format: string;
+  secureUrl: string;
+  width: number;
+  height: number;
 }
 
 export interface Folder {

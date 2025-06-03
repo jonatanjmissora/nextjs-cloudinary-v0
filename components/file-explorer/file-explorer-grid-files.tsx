@@ -1,7 +1,8 @@
 import { CustomFile } from "@/lib/types";
 import { Checkbox } from "../ui/checkbox";
-import { getFileIcon } from "@/lib/get-file-icon";
 import { FileActions } from "./file-explorer-actions";
+import { CldImage } from "next-cloudinary";
+import { setFileDate, setFileSize } from "@/lib/utils";
 
 interface FileExplorerGridFilesProps {
     sortedFiles: CustomFile[]; 
@@ -25,34 +26,74 @@ interface FileExplorerGridFilesProps {
               : ""
               }`}
           >
-            {/* Checkbox en la esquina superior izquierda */}
-            <div className="absolute top-2 left-2 z-10">
-              <Checkbox
-                checked={selectedFiles.has(file.id)}
-                // onCheckedChange={(checked) => onFileSelect(file.id, checked as boolean)}
-                className="bg-background border-2"
-              />
-            </div>
+            
+            <ImageCardHeader 
+              selectedFiles={selectedFiles} 
+              file={file} 
+              currentFolderId={currentFolderId} 
+              onRenameFile={onRenameFile} 
+              onDeleteFile={onDeleteFile} 
+            />
 
-            <div className="flex justify-center mb-3 mt-4">{getFileIcon(file.type)}</div>
+            <CldImage
+              key={file.id}
+              src={file.id}
+              alt={file.name}
+              width="500"
+              height="500"
+              crop={{
+                type: "auto",
+                source: true
+            }}
+              className={""}
+            />
             <div className="text-center">
-              <p className="font-medium truncate" title={file.name}>
-                {file.name}
-              </p>
               <p className="text-xs text-muted-foreground">
-                {file.lastModified} · {file.size}
+                {setFileDate(file.lastModified)} · {setFileSize(file.size)}
               </p>
             </div>
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <FileActions
-                file={file}
-                folderId={currentFolderId}
-                onRenameFile={onRenameFile}
-                onDeleteFile={onDeleteFile}
-              />
-            </div>
+            
           </div>
         ))}
+      </div>
+    )
+  }
+
+  interface ImageCardHeaderProps {
+    selectedFiles: Set<string>; 
+    file: CustomFile;
+    currentFolderId: string; 
+    onRenameFile: (file: CustomFile, folderId: string) => void
+    onDeleteFile: (file: CustomFile, folderId: string) => void
+  }
+
+  const ImageCardHeader = ({selectedFiles, file, currentFolderId, onRenameFile, onDeleteFile}: ImageCardHeaderProps) => {
+    return (
+      <div className="flex justify-between items-center">
+        {/* Checkbox en la esquina superior izquierda */}
+        <div className="">
+            <Checkbox
+              checked={selectedFiles.has(file.id)}
+              className="bg-background border-2"
+            />
+          </div>
+
+          {/* nombre de la imagen */}
+          <div className="text-center px-4">
+            <p className="font-medium truncate" title={file.name}>
+              {file.name}
+            </p>
+          </div>
+
+          {/* menu de accion para la imagen */}
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+            <FileActions
+              file={file}
+              folderId={currentFolderId}
+              onRenameFile={onRenameFile}
+              onDeleteFile={onDeleteFile}
+            />
+          </div>
       </div>
     )
   }

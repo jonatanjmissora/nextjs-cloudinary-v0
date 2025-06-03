@@ -1,33 +1,13 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { CloudinaryAsset } from "./types"
+import { CloudinaryAsset, Folder } from "./types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export interface FoldersType {
-  id: string;
-  parentId: string | null;
-  files: {
-    id: string;
-    name: string;
-    type: string;
-    size: number;
-    lastModified: string;
-    format: string;
-    secureUrl: string;
-    width: number;
-    height: number;
-  }[];
-}
-
-interface FolderStructure {
-  [key: string]: FoldersType;
-}
-
-export function getInitialAssets(initialAssets: CloudinaryAsset[]): FolderStructure {
-  const result: FolderStructure = {};
+export function getInitialAssets(initialAssets: CloudinaryAsset[]): Folder[] {
+  const folderMap: Record<string, Folder> = {};
   const folderIds = new Map<string, number>();
   let nextId = 1;
 
@@ -35,12 +15,11 @@ export function getInitialAssets(initialAssets: CloudinaryAsset[]): FolderStruct
   initialAssets.forEach((asset) => {
     const pathParts = asset.asset_folder.split('/');
     let currentPath = '';
-    let currentFolderId = null;
     
     for (const part of pathParts) {
       currentPath = currentPath ? `${currentPath}/${part}` : part;
       
-      if (!result[currentPath]) {
+      if (!folderMap[currentPath]) {
         // Get parent folder ID
         const parentId = pathParts.length > 1 
           ? folderIds.get(pathParts.slice(0, -1).join('/'))
@@ -50,7 +29,8 @@ export function getInitialAssets(initialAssets: CloudinaryAsset[]): FolderStruct
         const folderName = part;
         
         // Create folder entry
-        result[currentPath] = {
+        folderMap[currentPath] = {
+          name: folderName,
           id: nextId.toString(),
           parentId: parentId?.toString() || null,
           files: []
@@ -68,33 +48,39 @@ export function getInitialAssets(initialAssets: CloudinaryAsset[]): FolderStruct
   // Second pass: add files to folders
   initialAssets.forEach(asset => {
     const path = asset.asset_folder;
-    result[path].files.push({
-      id: asset.public_id,
-      name: asset.display_name,
-      type: asset.resource_type,
-      size: asset.bytes,
-      lastModified: asset.uploaded_at,
-      format: asset.format,
-      secureUrl: asset.secure_url,
-      width: asset.width,
-      height: asset.height,
-    });
-  });
-
-  // Clean up folder names by removing parent paths from subfolder names
-  Object.keys(result).forEach(folderPath => {
-    const pathParts = folderPath.split('/');
-    if (pathParts.length > 1) {
-      const folderName = pathParts[pathParts.length - 1];
-      const parentPath = pathParts.slice(0, -1).join('/');
-      const newFolderName = `${folderName}`;
-      result[newFolderName] = result[folderPath];
-      delete result[folderPath];
+    const folder = folderMap[path];
+    if (folder) {
+      folder.files.push({
+        id: asset.public_id,
+        name: asset.display_name,
+        type: asset.resource_type,
+        size: asset.bytes,
+        lastModified: asset.uploaded_at,
+        format: asset.format,
+        secureUrl: asset.secure_url,
+        width: asset.width,
+        height: asset.height,
+      });
     }
   });
 
-  return result;
+  // Clean up folder names by removing parent paths from subfolder names
+  const cleanedFolders: Record<string, Folder> = {};
+  Object.entries(folderMap).forEach(([folderPath, folder]) => {
+    const pathParts = folderPath.split('/');
+    if (pathParts.length > 1) {
+      const folderName = pathParts[pathParts.length - 1];
+      cleanedFolders[folderName] = folder;
+    } else {
+      cleanedFolders[folderPath] = folder;
+    }
+  });
+
+  // Convert to array and return
+  const sortedFolderArray = Object.values(cleanedFolders).sort((a, b) => a.name.localeCompare(b.name))
+  return sortedFolderArray
 }
+
 
 export const getFileType = (fileName: string): string => {
   const extension = fileName.split(".").pop()?.toLowerCase()
@@ -150,170 +136,21 @@ export const getFileType = (fileName: string): string => {
   }
 }
 
-// const foldersInitial = [
-//   {
-//     asset_id: "01",
-//     asset_folder: "my folder 1",
-//     name: "my picture 1",
-//     type: "image",
-//     size: "1.2 MB",
-//     lastModified: "Ayer",
-//   },
-//   {
-//     asset_id: "02",
-//     asset_folder: "my folder 1",
-//     name: "my picture 2",
-//     type: "image",
-//     size: "1.4 MB",
-//     lastModified: "Hoy",
-//   },
-//   {
-//     asset_id: "03",
-//     asset_folder: "my folder 2",
-//     name: "my picture 3",
-//     type: "image",
-//     size: "1.3 MB",
-//     lastModified: "Hoy",
-//   },
-//   {
-//     asset_id: "04",
-//     asset_folder: "my folder 2",
-//     name: "my picture 4",
-//     type: "image",
-//     size: "1.0 MB",
-//     lastModified: "Hoy",
-//   },
-//   {
-//     asset_id: "05",
-//     asset_folder: "my folder 2/my folder 3",
-//     name: "my picture 5",
-//     type: "image",
-//     size: "1.8 MB",
-//     lastModified: "Hoy",
-//   },
-//   {
-//     asset_id: "06",
-//     asset_folder: "my folder 2/my folder 3",
-//     name: "my picture 6",
-//     type: "image",
-//     size: "1.9 MB",
-//     lastModified: "Hoy",
-//   },
-//   {
-//     asset_id: "07",
-//     asset_folder: "my folder 1",
-//     name: "my picture 7",
-//     type: "image",
-//     size: "1.1 MB",
-//     lastModified: "Ayer",
-//   },
-//   {
-//     asset_id: "08",
-//     asset_folder: "my folder 2/my folder 3",
-//     name: "my picture 8",
-//     type: "image",
-//     size: "1.0 MB",
-//     lastModified: "Hoy",
-//   },
-//   {
-//     asset_id: "09",
-//     asset_folder: "my folder 2/my folder 3/my folder 4",
-//     name: "my picture 9",
-//     type: "image",
-//     size: "1.0 MB",
-//     lastModified: "Ayer",
-//   },
-// ]
+export const setFileDate = (date: string) => {
+  const newDate = new Date(date);
+  return new Intl.DateTimeFormat('es-ES', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit'
+  }).format(newDate);
+};
 
-// const foldersFinish = {
-//   "my folder 1": {
-//     id: "1",
-//     parentId: null,
-//     files: [
-//       {
-//         id: "01",
-//         name: "my picture 1",
-//         type: "image",
-//         size: "1.2 MB",
-//         lastModified: "Ayer",
-//       },
-//       {
-//         id: "02",
-//         name: "my picture 1",
-//         type: "image",
-//         size: "1.4 MB",
-//         lastModified: "Hoy",
-//       },
-//       {
-//         id: "07",
-//         name: "my picture 7",
-//         type: "image",
-//         size: "1.1 MB",
-//         lastModified: "Ayer",
-//       },
-//     ],
-//   },
-//   "my folder 2": {
-//     id: "2",
-//     parentId: null,
-//     files: [
-//       {
-//         id: "03",
-//         name: "my picture 3",
-//         type: "image",
-//         size: "1.3 MB",
-//         lastModified: "Hoy",
-//       },
-//       {
-//         id: "04",
-//         name: "my picture 4",
-//         type: "image",
-//         size: "1.0 MB",
-//         lastModified: "Hoy",
-//       },
-//     ],
-//   },
-//   "my folder 3": {
-//     id: "3",
-//     parentId: "2",
-//     files: [
-//       {
-//         id: "05",
-//         name: "my picture 5",
-//         type: "image",
-//         size: "1.8 MB",
-//         lastModified: "Hoy",
-//       },
-//       {
-//         id: "06",
-//         name: "my picture 6",
-//         type: "image",
-//         size: "1.9 MB",
-//         lastModified: "Hoy",
-//       },
-//       {
-//         id: "08",
-//         name: "my picture 8",
-//         type: "image",
-//         size: "1.0 MB",
-//         lastModified: "Hoy",
-//       },
-//     ],
-//   },
-//   "my folder 4": {
-//     id: "4",
-//     parentId: "3",
-//     files: [
-//       {
-//         id: "09",
-//         name: "my picture 9",
-//         type: "image",
-//         size: "1.0 MB",
-//         lastModified: "Ayer",
-//       },
-//     ],
-//   },
-// }
-
-
-
+export const setFileSize = (bits: number, decimalPlaces = 1) => {
+  if (bits < 0) {
+    return "Invalid input";
+  }
+  const bytes = bits / 8;
+  const kilobytes = bytes / (1024 );
+  if(kilobytes >= 1024) return (kilobytes/1024).toFixed(decimalPlaces) + " MB";
+  return kilobytes.toFixed(decimalPlaces) + " KB";
+}

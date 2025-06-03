@@ -32,6 +32,7 @@ export function FileExplorer({
   const [isRenameFileDialogOpen, setIsRenameFileDialogOpen] = useState(false)
   const [isDeleteFileDialogOpen, setIsDeleteFileDialogOpen] = useState(false)
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false)
+  const [isTransformDialogOpen, setIsTransformDialogOpen] = useState(false)
   const [fileToRename, setFileToRename] = useState<{ file: CustomFile; folderId: string } | null>(null)
   const [fileToDelete, setFileToDelete] = useState<{ file: CustomFile; folderId: string } | null>(null)
   const [newFileName, setNewFileName] = useState("")
@@ -154,22 +155,25 @@ export function FileExplorer({
   // Filtrar archivos por búsqueda
   const filteredFiles = currentFolder.files.filter((file) =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  );
 
   // Ordenar archivos
   const sortedFiles = [...filteredFiles].sort((a, b) => {
     if (sortBy === "name") {
-      return a.name.localeCompare(b.name)
+      return a.name.localeCompare(b.name);
     } else if (sortBy === "size") {
-      // Convertir tamaño a número para comparar (simplificado)
-      const sizeA = Number.parseFloat(a.size.split(" ")[0]) || 0
-      const sizeB = Number.parseFloat(b.size.split(" ")[0]) || 0
-      return sizeB - sizeA
-    } else {
-      // Por fecha (simplificado)
-      return a.lastModified.localeCompare(b.lastModified)
+      return b.size - a.size; // Direct numeric comparison
+    } else { // Assuming sortBy === "date"
+      // Robust date sorting (newest first)
+      const dateA = new Date(a.lastModified).getTime();
+      const dateB = new Date(b.lastModified).getTime();
+      // Handle cases where date might be invalid (e.g., "Ahora")
+      if (isNaN(dateA) && isNaN(dateB)) return 0;
+      if (isNaN(dateA)) return 1; // Put invalid dates at the end (ascending sort for errors)
+      if (isNaN(dateB)) return -1; // Put invalid dates at the end (ascending sort for errors)
+      return dateB - dateA; // Sort descending (newest first)
     }
-  })
+  });
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -178,7 +182,7 @@ export function FileExplorer({
         folders={folders}
         currentFolder={currentFolder}
         handleFolderChange={handleFolderChange}
-        sortedFiles={sortedFiles as unknown as File[]}
+        sortedFiles={sortedFiles}
         searchQuery={searchQuery}
       />
 
@@ -198,7 +202,7 @@ export function FileExplorer({
           : <div className="space-y-4">
               {/* Seleccion de archivos */}
               <FileExplorerFilesSelection 
-                sortedFiles={sortedFiles as unknown as CustomFile[]} 
+                sortedFiles={sortedFiles} 
                 selectedFiles={selectedFiles} 
                 setSelectedFiles={setSelectedFiles} 
                 setIsBulkDeleteDialogOpen={setIsBulkDeleteDialogOpen}

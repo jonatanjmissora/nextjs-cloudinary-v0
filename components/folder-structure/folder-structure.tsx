@@ -16,7 +16,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import type { Folder } from "@/lib/types"
 
 interface FolderStructureProps {
-  onSelectFolder: (folder: Folder) => void
+  onSelectFolder: (folder: Folder | null) => void
   selectedFolder: Folder | null
   onFoldersUpdate: (folders: Folder[]) => void
   folders: Folder[]
@@ -102,37 +102,38 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
   }
 
   const handleDeleteFolder = () => {
-    if (!folderToDelete) return
+    if (!folderToDelete) return;
 
-    const folderId = folderToDelete.id
-    // Eliminar la carpeta y todas sus subcarpetas
-    const folderIdsToDelete = [folderId]
+    const folderId = folderToDelete.id;
+    const folderIdsToDelete = [folderId];
 
     // Función recursiva para encontrar todas las subcarpetas
-    const findSubfolders = (parentId: string) => {
+    const findSubfolders = (parentId: string | null) => {
       folders.forEach((folder) => {
         if (folder.parentId === parentId) {
-          folderIdsToDelete.push(folder.id)
-          findSubfolders(folder.id)
+          folderIdsToDelete.push(folder.id);
+          findSubfolders(folder.id);
         }
-      })
-    }
+      });
+    };
 
-    findSubfolders(folderId)
+    findSubfolders(folderId);
 
     // Filtrar las carpetas que no están en la lista de eliminación
-    const updatedFolders = folders.filter((folder) => !folderIdsToDelete.includes(folder.id))
+    const updatedFolders = folders.filter((folder) => 
+      !folderIdsToDelete.includes(folder.id)
+    );
 
     // Notificar al componente padre directamente
-    onFoldersUpdate(updatedFolders)
+    onFoldersUpdate(updatedFolders);
 
     // Si la carpeta eliminada era la seleccionada, deseleccionar
     if (selectedFolder && folderIdsToDelete.includes(selectedFolder.id)) {
-      onSelectFolder(null)
+      onSelectFolder(null);
     }
 
-    setIsDeleteDialogOpen(false)
-    setFolderToDelete(null)
+    setIsDeleteDialogOpen(false);
+    setFolderToDelete(null);
   }
 
   // Contar subcarpetas y archivos para mostrar en la confirmación

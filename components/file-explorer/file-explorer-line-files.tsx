@@ -2,6 +2,8 @@ import { CustomFile } from "@/lib/types";
 import { Checkbox } from "../ui/checkbox";
 import { getFileIcon } from "@/lib/get-file-icon";
 import { FileActions } from "./file-explorer-actions";
+import { CldImage } from "next-cloudinary";
+import { setFileDate, setFileSize } from "@/lib/utils";
 
 interface FileExplorerLineFilesProps {
     sortedFiles: CustomFile[]; 
@@ -42,11 +44,22 @@ interface FileExplorerLineFilesProps {
                           />
                         </td>
                         <td className="p-3 flex items-center">
-                          <div className="mr-3">{getFileIcon(file.type)}</div>
+                        <CldImage
+                          key={file.id}
+                          src={file.id}
+                          alt={file.name}
+                          width="50"
+                          height="50"
+                          crop={{
+                            type: "auto",
+                            source: true
+                        }}
+                          className={"mx-4"}
+                        />
                           <span title={file.name}>{file.name}</span>
                         </td>
-                        <td className="p-3 hidden md:table-cell text-muted-foreground">{file.lastModified}</td>
-                        <td className="p-3 hidden md:table-cell text-muted-foreground">{file.size}</td>
+                        <td className="p-3 hidden md:table-cell text-muted-foreground">{setFileDate(file.lastModified)}</td>
+                        <td className="p-3 hidden md:table-cell text-muted-foreground">{setFileSize(file.size)}</td>
                         <td className="p-3">
                           <FileActions
                             file={file}

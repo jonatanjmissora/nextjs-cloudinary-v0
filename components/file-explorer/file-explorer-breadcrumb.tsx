@@ -1,11 +1,11 @@
-import { Folder } from "@/lib/types";
+import { Folder, CustomFile } from "@/lib/types";
 import { ChevronRight } from "lucide-react";
 
 interface FileExplorerBreadcrumbProps {
   folders: Folder[]
   currentFolder: Folder
   handleFolderChange: (folder: Folder) => void
-  sortedFiles: File[]
+  sortedFiles: CustomFile[]
   searchQuery: string
 }
 

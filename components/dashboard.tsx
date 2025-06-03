@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useCallback, useEffect } from "react"
-import { FolderStructure } from "@/components/folder-structure/folder-structure"
 import { Header } from "@/components/header/header"
 import { FileExplorer } from "@/components/file-explorer/file-explorer"
 import type { CloudinaryAsset, Folder } from "@/lib/types"
@@ -9,7 +8,7 @@ import { initialFolders } from "@/lib/mock-folders"
 import MainHeader from "./main-header"
 import { MainFooter } from "./main-footer"
 import { getInitialAssets } from "@/lib/utils"
-import { ImagesGrid } from "./file-explorer/file-explorer-image-grid"
+import { FolderStructure } from "./folder-structure/folder-structure"
 
 export function Dashboard() {
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
@@ -19,7 +18,6 @@ export function Dashboard() {
   const [folders, setFolders] = useState<Folder[]>(initialFolders)
 
   const [assets, setAssets] = useState<CloudinaryAsset[]>([])
-  const [assetsFolders, setAssetsFolder] = useState({})
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(true)
@@ -39,11 +37,15 @@ export function Dashboard() {
 
   // Manejar la selección de carpeta de forma segura
   const handleSelectFolder = useCallback(
-    (folder: Folder) => {
-      // Verificar que la carpeta existe en el estado actual
-      const folderExists = folders.some((f) => f.id === folder.id)
-      if (folderExists) {
-        setSelectedFolder(folder)
+    (folder: Folder | null) => {
+      if (folder) {
+        // Verificar que la carpeta existe en el estado actual
+        const folderExists = folders.some((f) => f.id === folder.id)
+        if (folderExists) {
+          setSelectedFolder(folder)
+        }
+      } else {
+        setSelectedFolder(null)
       }
     },
     [folders],
@@ -59,7 +61,7 @@ export function Dashboard() {
       const initialAssets = await res.json()
       setAssets(initialAssets)
       const folders = getInitialAssets(initialAssets)
-      setAssetsFolder(folders)
+      setFolders(folders)
       setError("")
     } catch (error: unknown) {
       console.log(error instanceof Error ? error.message : String(error))
@@ -107,16 +109,15 @@ export function Dashboard() {
                   ? <p>Error: {error}</p>
                 
                   :
-                  // <FileExplorer
-                  //   folder={selectedFolder}
-                  //   searchQuery={searchQuery}
-                  //   view={view}
-                  //   sortBy={sortBy}
-                  //   folders={folders}
-                  //   onSelectFolder={handleSelectFolder}
-                  //   onFoldersUpdate={handleFoldersUpdate}
-                  // />
-                  <ImagesGrid assets={assets} />
+                  <FileExplorer
+                    folder={selectedFolder}
+                    searchQuery={searchQuery}
+                    view={view}
+                    sortBy={sortBy}
+                    folders={folders}
+                    onSelectFolder={handleSelectFolder}
+                    onFoldersUpdate={handleFoldersUpdate}
+                  />
           }
         </div>
       </div>
