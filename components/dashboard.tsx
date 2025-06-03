@@ -9,16 +9,16 @@ import { initialFolders } from "@/lib/mock-folders"
 import MainHeader from "./main-header"
 import { MainFooter } from "./main-footer"
 import { CldImage } from "next-cloudinary"
+import { FoldersType, getInitialAssets } from "@/lib/utils"
 
 const getAssetsFolders = (data: CloudinaryAsset[]): Record<string, string[]> => {
   const folders = new Map<string, string[]>();
   
   data.forEach(asset => {
     if (asset.asset_folder) {
-      console.log(asset.asset_folder)
       // Separar la ruta en partes
         const parts = asset.asset_folder.split('/');
-        
+        console.log(parts)
         // Si hay más de una parte, significa que hay subcarpetas
         if (parts.length > 1) {
           const rootFolder = parts[0];
@@ -34,8 +34,8 @@ const getAssetsFolders = (data: CloudinaryAsset[]): Record<string, string[]> => 
             folders.get(rootFolder)?.push(subFolder);
           }
         }
-        else {
-          
+        else if(!folders.has(parts[0])){
+          folders.set(parts[0], [])
         }
       }
   });
@@ -52,7 +52,7 @@ export function Dashboard() {
   const [folders, setFolders] = useState<Folder[]>(initialFolders)
 
   const [assets, setAssets] = useState<CloudinaryAsset[]>([])
-  const [assetsFolders, setAssetsFolder] = useState<Record<string, string[]>>({})
+  const [assetsFolders, setAssetsFolder] = useState({})
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(true)
@@ -89,10 +89,11 @@ export function Dashboard() {
   const getData = async() => {
     try {
       const res = await fetch(`/api/assets?${searchTerm}`)
-      const data = await res.json()
-      setAssets(data)
-      const folders = getAssetsFolders(data)
+      const initialAssets = await res.json()
+      setAssets(initialAssets)
+      const folders = getInitialAssets(initialAssets)
       console.log(folders)
+      setAssetsFolder(folders)
       setError("")
     } catch (error: unknown) {
       console.log(error instanceof Error ? error.message : String(error))
@@ -163,6 +164,7 @@ const ImagesContainer = ({assets}: {assets: CloudinaryAsset[]}) => {
     <div className="grid-container">
       {assets.map((asset) => (
           <CldImage
+          key={asset.public_id}
           src={asset.public_id}
           alt={asset.display_name}
           width="500"
