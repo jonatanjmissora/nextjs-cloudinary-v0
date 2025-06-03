@@ -23,32 +23,44 @@ export interface FoldersType {
 }
 
 interface FolderStructure {
-  [key: string]: Folder;
+  [key: string]: FoldersType;
 }
 
 export function getInitialAssets(initialAssets: CloudinaryAsset[]): FolderStructure {
   const result: FolderStructure = {};
-  const idCounter = new Map<string, number>();
+  const folderIds = new Map<string, number>();
+  let nextId = 1;
 
-  // First pass: create folder structure
-  initialAssets.forEach((asset, index) => {
+  // First pass: create folder structure with proper IDs
+  initialAssets.forEach((asset) => {
     const pathParts = asset.asset_folder.split('/');
     let currentPath = '';
+    let currentFolderId = null;
     
     for (const part of pathParts) {
       currentPath = currentPath ? `${currentPath}/${part}` : part;
       
       if (!result[currentPath]) {
+        // Get parent folder ID
         const parentId = pathParts.length > 1 
-          ? result[pathParts.slice(0, -1).join('/')]?.id 
+          ? folderIds.get(pathParts.slice(0, -1).join('/'))
           : null;
-          
+
+        // Get folder name (last part of path)
+        const folderName = part;
+        
+        // Create folder entry
         result[currentPath] = {
-          id: (idCounter.get(currentPath) || 0).toString(),
-          parentId,
+          id: nextId.toString(),
+          parentId: parentId?.toString() || null,
           files: []
         };
-        idCounter.set(currentPath, (idCounter.get(currentPath) || 0) + 1);
+        
+        // Store folder ID for future reference
+        folderIds.set(currentPath, nextId);
+        
+        // Increment ID for next folder
+        nextId++;
       }
     }
   });
@@ -67,6 +79,18 @@ export function getInitialAssets(initialAssets: CloudinaryAsset[]): FolderStruct
       width: asset.width,
       height: asset.height,
     });
+  });
+
+  // Clean up folder names by removing parent paths from subfolder names
+  Object.keys(result).forEach(folderPath => {
+    const pathParts = folderPath.split('/');
+    if (pathParts.length > 1) {
+      const folderName = pathParts[pathParts.length - 1];
+      const parentPath = pathParts.slice(0, -1).join('/');
+      const newFolderName = `${folderName}`;
+      result[newFolderName] = result[folderPath];
+      delete result[folderPath];
+    }
   });
 
   return result;

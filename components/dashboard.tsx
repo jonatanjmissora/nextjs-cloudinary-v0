@@ -8,41 +8,8 @@ import type { CloudinaryAsset, Folder } from "@/lib/types"
 import { initialFolders } from "@/lib/mock-folders"
 import MainHeader from "./main-header"
 import { MainFooter } from "./main-footer"
-import { CldImage } from "next-cloudinary"
-import { FoldersType, getInitialAssets } from "@/lib/utils"
-
-const getAssetsFolders = (data: CloudinaryAsset[]): Record<string, string[]> => {
-  const folders = new Map<string, string[]>();
-  
-  data.forEach(asset => {
-    if (asset.asset_folder) {
-      // Separar la ruta en partes
-        const parts = asset.asset_folder.split('/');
-        console.log(parts)
-        // Si hay más de una parte, significa que hay subcarpetas
-        if (parts.length > 1) {
-          const rootFolder = parts[0];
-          const subFolder = parts.slice(1).join('/');
-          
-          // Si no existe la entrada para la carpeta raíz, crearla
-          if (!folders.has(rootFolder)) {
-            folders.set(rootFolder, []);
-          }
-          
-          // Agregar la subcarpeta si no existe
-          if (!folders.get(rootFolder)?.includes(subFolder)) {
-            folders.get(rootFolder)?.push(subFolder);
-          }
-        }
-        else if(!folders.has(parts[0])){
-          folders.set(parts[0], [])
-        }
-      }
-  });
-  
-  // Convertir el Map a un objeto
-  return Object.fromEntries(folders.entries());
-}
+import { getInitialAssets } from "@/lib/utils"
+import { ImagesGrid } from "./file-explorer/file-explorer-image-grid"
 
 export function Dashboard() {
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
@@ -92,7 +59,6 @@ export function Dashboard() {
       const initialAssets = await res.json()
       setAssets(initialAssets)
       const folders = getInitialAssets(initialAssets)
-      console.log(folders)
       setAssetsFolder(folders)
       setError("")
     } catch (error: unknown) {
@@ -150,32 +116,11 @@ export function Dashboard() {
                   //   onSelectFolder={handleSelectFolder}
                   //   onFoldersUpdate={handleFoldersUpdate}
                   // />
-                  <ImagesContainer assets={assets} />
+                  <ImagesGrid assets={assets} />
           }
         </div>
       </div>
       <MainFooter />
-    </div>
-  )
-}
-
-const ImagesContainer = ({assets}: {assets: CloudinaryAsset[]}) => {
-  return (
-    <div className="grid-container">
-      {assets.map((asset) => (
-          <CldImage
-          key={asset.public_id}
-          src={asset.public_id}
-          alt={asset.display_name}
-          width="500"
-          height="500"
-          crop={{
-            type: "auto",
-            source: true
-        }}
-          className={""}
-        />
-      ))}
     </div>
   )
 }
