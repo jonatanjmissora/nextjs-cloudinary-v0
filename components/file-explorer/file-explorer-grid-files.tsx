@@ -11,9 +11,10 @@ interface FileExplorerGridFilesProps {
     currentFolderId: string; 
     onRenameFile: (file: CustomFile, folderId: string) => void
     onDeleteFile: (file: CustomFile, folderId: string) => void
+    onTransformFile: (file: CustomFile, folderId: string) => void
   }
   
-  export const FileExplorerGridFiles = ({sortedFiles, selectedFiles, onFileSelect, currentFolderId, onRenameFile, onDeleteFile}: FileExplorerGridFilesProps) => {
+  export const FileExplorerGridFiles = ({sortedFiles, selectedFiles, onFileSelect, currentFolderId, onRenameFile, onDeleteFile, onTransformFile}: FileExplorerGridFilesProps) => {
 
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -33,6 +34,7 @@ interface FileExplorerGridFilesProps {
               currentFolderId={currentFolderId} 
               onRenameFile={onRenameFile} 
               onDeleteFile={onDeleteFile} 
+              onTransformFile={onTransformFile}
             />
 
             <CldImage
@@ -65,9 +67,10 @@ interface FileExplorerGridFilesProps {
     currentFolderId: string; 
     onRenameFile: (file: CustomFile, folderId: string) => void
     onDeleteFile: (file: CustomFile, folderId: string) => void
+    onTransformFile: (file: CustomFile, folderId: string) => void
   }
 
-  const ImageCardHeader = ({selectedFiles, file, currentFolderId, onRenameFile, onDeleteFile}: ImageCardHeaderProps) => {
+  const ImageCardHeader = ({selectedFiles, file, currentFolderId, onRenameFile, onDeleteFile, onTransformFile}: ImageCardHeaderProps) => {
     return (
       <div className="flex justify-between items-center">
         {/* Checkbox en la esquina superior izquierda */}
@@ -92,6 +95,7 @@ interface FileExplorerGridFilesProps {
               folderId={currentFolderId}
               onRenameFile={onRenameFile}
               onDeleteFile={onDeleteFile}
+              onTransformFile={onTransformFile}
             />
           </div>
       </div>

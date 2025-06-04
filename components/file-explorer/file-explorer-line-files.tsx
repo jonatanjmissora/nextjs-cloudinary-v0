@@ -1,6 +1,5 @@
 import { CustomFile } from "@/lib/types";
 import { Checkbox } from "../ui/checkbox";
-import { getFileIcon } from "@/lib/get-file-icon";
 import { FileActions } from "./file-explorer-actions";
 import { CldImage } from "next-cloudinary";
 import { setFileDate, setFileSize } from "@/lib/utils";
@@ -12,9 +11,10 @@ interface FileExplorerLineFilesProps {
     currentFolderId: string; 
     onRenameFile: (file: CustomFile, folderId: string) => void
     onDeleteFile: (file: CustomFile, folderId: string) => void
+    onTransformFile: (file: CustomFile, folderId: string) => void
   }
   
-  export const FileExplorerLineFiles = ({ sortedFiles, selectedFiles, onFileSelect, currentFolderId, onRenameFile, onDeleteFile }: FileExplorerLineFilesProps ) => {
+  export const FileExplorerLineFiles = ({ sortedFiles, selectedFiles, onFileSelect, currentFolderId, onRenameFile, onDeleteFile, onTransformFile }: FileExplorerLineFilesProps ) => {
     return (
       <div className="space-y-4">
               {/* Barra de acciones para vista de lista */}
@@ -66,6 +66,7 @@ interface FileExplorerLineFilesProps {
                             folderId={currentFolderId}
                             onRenameFile={onRenameFile}
                             onDeleteFile={onDeleteFile}
+                            onTransformFile={ onTransformFile}
                           />
                         </td>
                       </tr>

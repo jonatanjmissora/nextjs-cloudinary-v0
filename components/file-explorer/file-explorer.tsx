@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Home } from 'lucide-react'
+import { AlertTriangle, Home } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast"
 import type { Folder, CustomFile } from "@/lib/types"
 import { RenameFileDialog, DeleteFileDialog, BulkDeleteDialog } from "./file-explorer-dialog"
@@ -9,6 +9,10 @@ import FileExplorerBreadcrumb from "./file-explorer-breadcrumb"
 import { FileExplorerFilesSelection } from "./file-explorer-files-selection"
 import { FileExplorerGridFiles } from "./file-explorer-grid-files"
 import { FileExplorerLineFiles } from "./file-explorer-line-files"
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@radix-ui/react-dialog"
+import { DialogFooter, DialogHeader } from "../ui/dialog"
+import { Button } from "../ui/button"
+import TrasnformFileDialog from "./file-explorer-transformation"
 
 interface FileExplorerProps {
   folder: Folder | null
@@ -32,9 +36,10 @@ export function FileExplorer({
   const [isRenameFileDialogOpen, setIsRenameFileDialogOpen] = useState(false)
   const [isDeleteFileDialogOpen, setIsDeleteFileDialogOpen] = useState(false)
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false)
-  const [isTransformDialogOpen, setIsTransformDialogOpen] = useState(false)
+  const [isTransformFileDialogOpen, setIsTransformFileDialogOpen] = useState(false)
   const [fileToRename, setFileToRename] = useState<{ file: CustomFile; folderId: string } | null>(null)
   const [fileToDelete, setFileToDelete] = useState<{ file: CustomFile; folderId: string } | null>(null)
+  const [fileToTransform, setFileToTransform] = useState<{ file: CustomFile; folderId: string } | null>(null)
   const [newFileName, setNewFileName] = useState("")
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
   const { toast } = useToast()
@@ -119,6 +124,10 @@ export function FileExplorer({
     }
   }
 
+  const handleConfirmTransform = () => {
+    
+  }
+
   // Manejar selección de archivos
   const handleFileSelect = (fileId: string, checked: boolean) => {
     const newSelectedFiles = new Set(selectedFiles)
@@ -175,6 +184,11 @@ export function FileExplorer({
     }
   });
 
+  const handleTransformFile = (file: CustomFile, folderId: string) => {
+    setFileToTransform({ file, folderId })
+    setIsTransformFileDialogOpen(true)
+  }
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Breadcrumb */}
@@ -207,7 +221,7 @@ export function FileExplorer({
                 setSelectedFiles={setSelectedFiles} 
                 setIsBulkDeleteDialogOpen={setIsBulkDeleteDialogOpen}
               />
-            
+
               {
                 view === "grid" 
 
@@ -219,6 +233,7 @@ export function FileExplorer({
                       currentFolderId={currentFolder.id} 
                       onRenameFile={handleRenameFile}
                       onDeleteFile={handleDeleteFile}
+                      onTransformFile={handleTransformFile}
                     />
 
                     /* Contenido de archivos en linea */
@@ -229,6 +244,7 @@ export function FileExplorer({
                       currentFolderId={currentFolder.id} 
                       onRenameFile={handleRenameFile}
                       onDeleteFile={handleDeleteFile}
+                      onTransformFile={handleTransformFile}
                     />
               }
             </div>
@@ -258,6 +274,14 @@ export function FileExplorer({
         selectedFilesCount={selectedFiles.size}
         onConfirm={handleConfirmBulkDelete}
       />
+
+      <TrasnformFileDialog 
+        isOpen={isTransformFileDialogOpen}
+        onOpenDialog={setIsTransformFileDialogOpen}
+        fileToTransform={fileToTransform}
+        onConfirm={handleConfirmTransform}
+      />
+
     </div>
   )
 }

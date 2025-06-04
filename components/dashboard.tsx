@@ -17,7 +17,7 @@ export function Dashboard() {
   const [sortBy, setSortBy] = useState<"name" | "date" | "size">("name")
   const [folders, setFolders] = useState<Folder[]>(initialFolders)
 
-  const [assets, setAssets] = useState<CloudinaryAsset[]>([])
+  const [assets, setAssets] = useState<CloudinaryAsset[] | null>(null)
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(true)
@@ -65,8 +65,8 @@ export function Dashboard() {
       setError("")
     } catch (error: unknown) {
       console.log(error instanceof Error ? error.message : String(error))
-      setError(error instanceof Error ? error.message : String(error))
-      setAssets([])
+      setError("No se pudo leer de Cloudinary")
+      setAssets(null)
     }
     finally{
       setLoading(false)
@@ -103,10 +103,10 @@ export function Dashboard() {
           />
           {
             loading 
-              ? <p>Loading...</p> 
+              ? <div className="w-full h-full flex justify-center mt-12 text-bold text-xl"><p>Loading...</p></div> 
               
               : error 
-                  ? <p>Error: {error}</p>
+                  ? <div className="w-full h-full flex justify-center mt-12 text-bold text-xl"><p>Error: {error}</p></div>
                 
                   :
                   <FileExplorer

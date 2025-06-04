@@ -8,11 +8,11 @@ interface FileActionsProps {
     folderId: string
     onRenameFile: (file: CustomFile, folderId: string) => void
     onDeleteFile: (file: CustomFile, folderId: string) => void
+    onTransformFile: (file: CustomFile, folderId: string) => void
   }
-
-
   
-  export function FileActions({ file, folderId, onRenameFile, onDeleteFile }: FileActionsProps) {
+  export function FileActions({ file, folderId, onRenameFile, onDeleteFile, onTransformFile }: FileActionsProps) {
+    
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -34,7 +34,7 @@ interface FileActionsProps {
             <Share2 size={14} className="mr-2" />
             <span>Compartir</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onTransformFile(file, folderId)}>
             <WandSparkles size={14} className="mr-2" />
             <span>Transformacion</span>
           </DropdownMenuItem>
