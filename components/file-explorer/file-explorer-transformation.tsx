@@ -1,5 +1,4 @@
-import { DialogContent, Dialog } from "@radix-ui/react-dialog";
-import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { CldImage } from "next-cloudinary";
 import { useEffect, useState } from "react";
@@ -17,47 +16,63 @@ export default function TrasnformFileDialog({isOpen, onOpenDialog, fileToTransfo
     const [isBackgroundRemove, setIsBackgroundRemove] = useState<boolean>(false)
     const [isGrayscale, setIsGrayscale] = useState<boolean>(false)
     const [prompt, setPrompt] = useState<string>("")
-    if(!fileToTransform) return
-    const file = fileToTransform.file
 
-    // useEffect(() => {
-    //     setIsBackgroundRemove(false)
-    //     setIsGrayscale(false)
-    //     setPrompt("")
-    // }, [file])
+    useEffect(() => {
+        setIsBackgroundRemove(false)
+        setIsGrayscale(false)
+        setPrompt("")
+    }, [fileToTransform])
+
+    if(!fileToTransform) {
+        return null
+    }
+    const file = fileToTransform.file
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenDialog}>
+
       <DialogContent>
+
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <span>Transformacion usando IA</span>
+            Transformacion usando IA
           </DialogTitle>
-          <DialogDescription>
-            <div className="flex flex-col justify-center items-center gap-1">
-              <span className="font-medium truncate text-center w-full">{file.name}</span>
-              <CloudinaryImage 
-                file={file} 
-                isBackgroundRemove={isBackgroundRemove} 
-                isGrayscale={isGrayscale} 
-                prompt={prompt}
-                />
-            </div>
+          <DialogDescription className="flex flex-col gap-1 items-center pt-2">
+
+            <span className="text-sm text-muted-foreground">{file.name}</span>
+
+            <CloudinaryImage 
+              file={file} 
+              isBackgroundRemove={isBackgroundRemove} 
+              isGrayscale={isGrayscale} 
+              prompt={prompt}
+            />
+            
           </DialogDescription>
         </DialogHeader>
+
+        <TransformMenu 
+          isBackgroundRemove={isBackgroundRemove} 
+          setIsBackgroundRemove={setIsBackgroundRemove} 
+          isGrayscale={isGrayscale} 
+          setIsGrayscale={setIsGrayscale} 
+          prompt={prompt} 
+          setPrompt={setPrompt}
+          onOpenDialog={onOpenDialog}
+          onConfirm={onConfirm}
+        />
+
         <DialogFooter>
-          <TransformMenu 
-            isBackgroundRemove={isBackgroundRemove} 
-            setIsBackgroundRemove={setIsBackgroundRemove} 
-            isGrayscale={isGrayscale} 
-            setIsGrayscale={setIsGrayscale} 
-            prompt={prompt} 
-            setPrompt={setPrompt}
-            onOpenDialog={onOpenDialog}
-            onConfirm={onConfirm}
-          />
+          <Button variant="outline" onClick={() => onOpenDialog(false)}>
+            Cancelar
+          </Button>
+          <Button variant="destructive" onClick={onConfirm}>
+            Transformar
+          </Button>
         </DialogFooter>
+
       </DialogContent>
+
     </Dialog>
   )
 }
@@ -102,10 +117,10 @@ interface TransformMenuProps {
 
 const TransformMenu = ({isBackgroundRemove, setIsBackgroundRemove, isGrayscale, setIsGrayscale, prompt, setPrompt, onOpenDialog, onConfirm}: TransformMenuProps) => {
   return (
-    <div className="flex flex-col gap-6" >
-      <div className="flex flex-col justify-center items-center gap-6">
+    <div className="flex flex-col" >
+      <div className="flex flex-col justify-center items-center gap-3">
 
-        <div className="flex gap-6">
+        <div className="flex gap-8">
 
           <div className="flex justify-center items-center gap-2">
               <input type="checkbox" id="background" name="background" 
@@ -130,14 +145,6 @@ const TransformMenu = ({isBackgroundRemove, setIsBackgroundRemove, isGrayscale, 
 
       </div>
 
-      <div className="flex gap-6 justify-center items-center w-full">
-        <Button variant="outline" onClick={() => onOpenDialog(false)}>
-          Cancelar
-        </Button>
-        <Button variant="destructive" onClick={onConfirm}>
-          Transformar
-        </Button>
-      </div>
     </div>
   )
 }

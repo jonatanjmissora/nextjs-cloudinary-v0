@@ -49,10 +49,11 @@ interface FileExplorerGridFilesProps {
             }}
               className={""}
             />
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground">
-                {setFileDate(file.lastModified)} · {setFileSize(file.size)}
-              </p>
+            <div className="flex justify-between items-center text-xs text-muted-foreground py-1">
+              <span>
+                {setFileDate(file.lastModified)}
+              </span>
+              <span>{setFileSize(file.size)}</span>
             </div>
             
           </div>
@@ -74,7 +75,7 @@ interface FileExplorerGridFilesProps {
     return (
       <div className="flex justify-between items-center">
         {/* Checkbox en la esquina superior izquierda */}
-        <div className="">
+          <div className="flex justify-center items-center">
             <Checkbox
               checked={selectedFiles.has(file.id)}
               className="bg-background border-2"
@@ -82,7 +83,7 @@ interface FileExplorerGridFilesProps {
           </div>
 
           {/* nombre de la imagen */}
-          <div className="text-center px-4">
+          <div className="text-center px-1 w-3/4">
             <p className="font-medium truncate" title={file.name}>
               {file.name}
             </p>
