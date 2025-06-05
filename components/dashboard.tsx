@@ -52,7 +52,7 @@ export function Dashboard() {
   )
 
   const onHandleNewUpload = (asset: CloudinaryAsset) => {
-    setAssets(prev => [asset, ...prev])
+    setAssets(prev => (prev ? [asset, ...prev] : [asset]))
   }
 
   const getData = async() => {
