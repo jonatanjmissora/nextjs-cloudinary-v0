@@ -11,9 +11,7 @@ export async function GET(request: Request) {
     try {
         
         const data = await cloudinary.api.root_folders()
-        console.log(data.folders)
         const subdata = await cloudinary.api.sub_folders(data.folders[1].name)
-        console.log(subdata.folders)
         
         return NextResponse.json(data.folders)
     } catch (error) {

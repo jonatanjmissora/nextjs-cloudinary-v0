@@ -3,7 +3,7 @@
 import { CldUploadWidget } from "next-cloudinary"
 
 import { useRef, type ChangeEvent } from "react"
-import { Search, Upload, Grid, List, SortAsc, Calendar, HardDrive } from "lucide-react"
+import { Search, Upload, Grid, List, SortAsc, Calendar, HardDrive, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import type { Folder, CustomFile } from "@/lib/types"
@@ -91,6 +91,9 @@ export function Header({
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
             />
+            <span className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 cursor-pointer ${searchQuery ? "block" : "hidden"}`}>
+              <X size={16} onClick={() => onSearchChange('')}/>
+            </span>
           </div>
 
           {/* Botón de subir archivos con texto */}

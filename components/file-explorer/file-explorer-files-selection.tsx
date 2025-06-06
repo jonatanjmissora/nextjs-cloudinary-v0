@@ -32,7 +32,7 @@ interface FileExplorerFilesSelectionProps {
           className: "bg-green-800 text-white",
         })
   
-        console.log("Toast should appear now", selectedFiles.size);
+        // console.log("Toast should appear now", selectedFiles.size);
       }
     }
   

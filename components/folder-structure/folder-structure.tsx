@@ -221,6 +221,12 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
   return (
     <div className="w-64 h-full border-r border-border flex flex-col bg-background">
 
+      <div className="px-4 flex justify-between items-center">
+        <span className="">Carpetas</span>
+        <Button variant="ghost" size="icon" onClick={() => handleSelectFolder(null)}>
+          Todas
+        </Button>
+      </div>
       <div className="flex-1 overflow-y-auto p-2">{renderFolderTree(null)}</div>
 
       {/* Diálogo para crear carpeta */}
