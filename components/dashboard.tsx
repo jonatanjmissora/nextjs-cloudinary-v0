@@ -17,7 +17,7 @@ export function Dashboard() {
   const [sortBy, setSortBy] = useState<"name" | "date" | "size">("name")
   const [folders, setFolders] = useState<Folder[]>(initialFolders)
 
-  const [assets, setAssets] = useState<CloudinaryAsset[] | null>(null)
+  // const [assets, setAssets] = useState<CloudinaryAsset[] | null>(null)
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(true)
@@ -52,21 +52,21 @@ export function Dashboard() {
   )
 
   const onHandleNewUpload = (asset: CloudinaryAsset) => {
-    setAssets(prev => (prev ? [asset, ...prev] : [asset]))
+    // setAssets(prev => (prev ? [asset, ...prev] : [asset]))
   }
 
   const getData = async() => {
     try {
       const res = await fetch(`/api/assets?${searchTerm}`)
       const initialAssets = await res.json()
-      setAssets(initialAssets)
+      // setAssets(initialAssets)
       const folders = getInitialAssets(initialAssets)
       setFolders(folders)
       setError("")
     } catch (error: unknown) {
       console.log(error instanceof Error ? error.message : String(error))
       setError("No se pudo leer de Cloudinary")
-      setAssets(null)
+      // setAssets(null)
     }
     finally{
       setLoading(false)
@@ -77,6 +77,8 @@ export function Dashboard() {
     getData()
   }, [searchTerm])
 
+  console.log(selectedFolder?.name)
+  console.log(folders.length)
 
   return (
     <div className="flex flex-col h-screen bg-background">

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { AlertTriangle, Home } from 'lucide-react'
+import { Home } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast"
 import type { Folder, CustomFile } from "@/lib/types"
 import { RenameFileDialog, DeleteFileDialog, BulkDeleteDialog } from "./file-explorer-dialog"
@@ -9,9 +9,6 @@ import FileExplorerBreadcrumb from "./file-explorer-breadcrumb"
 import { FileExplorerFilesSelection } from "./file-explorer-files-selection"
 import { FileExplorerGridFiles } from "./file-explorer-grid-files"
 import { FileExplorerLineFiles } from "./file-explorer-line-files"
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@radix-ui/react-dialog"
-import { DialogFooter, DialogHeader } from "../ui/dialog"
-import { Button } from "../ui/button"
 import TrasnformFileDialog from "./file-explorer-transformation"
 
 interface FileExplorerProps {
@@ -151,7 +148,8 @@ export function FileExplorer({
         <div className="p-4 border-b border-border">
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <Home size={16} />
-            <span>Selecciona una carpeta para ver su contenido</span>
+            <span>Selecciona una carpeta para ver su contenido
+            </span>
           </div>
         </div>
         <div className="flex-1 flex items-center justify-center p-8 text-muted-foreground">
