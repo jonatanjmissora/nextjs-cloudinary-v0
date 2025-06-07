@@ -21,7 +21,6 @@ interface FileExplorerProps {
   folders: Folder[]
   onSelectFolder: (folder: Folder) => void
   onFoldersUpdate: (folders: Folder[]) => void
-  assets: CloudinaryAsset[] | null
 }
 
 export function FileExplorer({
@@ -32,7 +31,6 @@ export function FileExplorer({
   folders,
   onSelectFolder,
   onFoldersUpdate,
-  assets,
 }: FileExplorerProps) {
   const [isRenameFileDialogOpen, setIsRenameFileDialogOpen] = useState(false)
   const [isDeleteFileDialogOpen, setIsDeleteFileDialogOpen] = useState(false)
@@ -46,7 +44,17 @@ export function FileExplorer({
   const { toast } = useToast()
 
   // Buscar la carpeta actual en la lista actualizada de carpetas
-  const currentFolder = folder ? folders.find((f) => f.id === folder.id) || folder : null
+  let currentFolder = folder ? folders.find((f) => f.id === folder.id) || folder : null
+
+  if (!currentFolder) {
+    currentFolder = {
+      id: "0",
+      name: "All",
+      parentId: null,
+      files: folders.map((folder) => folder.files).flat()
+    }
+    // return <ShowAllAssets assets={assets} handleFolderChange={handleFolderChange} folders={folders}/>
+  }
 
   const handleRenameFile = (file: CustomFile, folderId: string) => {
     setFileToRename({ file, folderId })
@@ -144,10 +152,6 @@ export function FileExplorer({
   const handleFolderChange = (folder: Folder) => {
     setSelectedFiles(new Set())
     onSelectFolder(folder)
-  }
-
-  if (!currentFolder) {
-    return <ShowAllAssets assets={assets} handleFolderChange={handleFolderChange} folders={folders}/>
   }
 
   // Filtrar archivos por búsqueda
@@ -272,63 +276,6 @@ export function FileExplorer({
         onConfirm={handleConfirmTransform}
       />
 
-    </div>
-  )
-}
-
-const ShowAllAssets = ({assets, handleFolderChange, folders}: {assets: CloudinaryAsset[] | null, handleFolderChange: (folder: Folder) => void, folders: Folder[]}) => {
-
-  const handleFileSelect = (folderName: string) => {
-    const folder = folders.find((f) => f.name === folderName)
-    console.log(folder)
-    if (folder) {
-      handleFolderChange(folder)
-    }
-  }
-
-  return (
-    <div className="flex-1 flex flex-col">
-      <div className="p-4">
-        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-          <Home size={16} />
-        </div>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 overflow-auto px-4">
-      {assets?.map((asset) => (
-        <div
-          key={asset.public_id}
-          onClick={() => handleFileSelect(asset.asset_folder)}
-          className={`group border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors relative}`}
-        >
-          
-          <div className="text-center px-4 w-full">
-            <p className="font-medium truncate" title={asset.filename}>
-              {asset.display_name}
-            </p>
-          </div>
-
-          <CldImage
-            key={asset.public_id}
-            src={asset.public_id}
-            alt={asset.filename}
-            width="500"
-            height="500"
-            crop={{
-              type: "auto",
-              source: true
-          }}
-            className={""}
-          />
-          <div className="flex justify-between items-center text-xs text-muted-foreground py-1">
-            <span>
-              {setFileDate(asset.uploaded_at)}
-            </span>
-            <span>{setFileSize(asset.bytes)}</span>
-          </div>
-          
-        </div>
-      ))}
-    </div>
     </div>
   )
 }
