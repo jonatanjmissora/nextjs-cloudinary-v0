@@ -36,7 +36,12 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
   const [folderToRename, setFolderToRename] = useState<Folder | null>(null)
   const [folderToDelete, setFolderToDelete] = useState<Folder | null>(null)
 
-  const rootFolders = folders.filter((folder) => folder.parentId === null)
+  // const rootFolders = folders.filter((folder) => folder.parentId === null)
+
+  if(!folders) 
+    return <div className="w-64 h-full border-r border-border flex justify-center pt-12 bg-background">
+      <p>Loading...</p>
+    </div>
 
   const toggleFolder = (folderId: string) => {
     setExpandedFolders((prev) => ({
