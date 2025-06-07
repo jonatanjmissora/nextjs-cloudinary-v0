@@ -15,7 +15,7 @@ export function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("")
   const [view, setView] = useState<"grid" | "list">("grid")
   const [sortBy, setSortBy] = useState<"name" | "date" | "size">("name")
-  const [folders, setFolders] = useState<Folder[] | null>(null)
+  const [folders, setFolders] = useState<Folder[]>([])
 
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [error, setError] = useState<string>("")
