@@ -14,12 +14,15 @@ interface FileExplorerGridFilesProps {
     onTransformFile: (file: CustomFile, folderId: string) => void
   }
   
-  export const FileExplorerGridFiles = ({sortedFiles, selectedFiles, onFileSelect, currentFolderId, onRenameFile, onDeleteFile, onTransformFile}: FileExplorerGridFilesProps) => {
-
-    console.log("File Explorer Grid: ")
-    console.log("sortedFiles", sortedFiles)
-    console.log("selected files", selectedFiles)
-    console.log("folder ID", currentFolderId)
+  export const FileExplorerGridFiles = ({
+    sortedFiles, 
+    selectedFiles, 
+    onFileSelect, 
+    currentFolderId, 
+    onRenameFile, 
+    onDeleteFile, 
+    onTransformFile}: 
+    FileExplorerGridFilesProps) => {
 
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">

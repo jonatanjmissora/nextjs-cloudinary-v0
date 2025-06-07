@@ -9,6 +9,7 @@ import MainHeader from "./main-header"
 import { MainFooter } from "./main-footer"
 import { getInitialAssets } from "@/lib/utils"
 import { FolderStructure } from "./folder-structure/folder-structure"
+import { Skeleton } from "./ui/skeleton"
 
 export function Dashboard() {
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
@@ -56,11 +57,13 @@ export function Dashboard() {
 
   const getData = async() => {
     try {
+      console.log("obteniendo datos de Cloudinary...")
       const res = await fetch(`/api/assets?${searchTerm}`)
       const initialAssets = await res.json()
       const folders = getInitialAssets(initialAssets)
       setFolders(folders)
       setError("")
+      console.log("datos de Cloudinary recibidos")
     } catch (error: unknown) {
       console.log(error instanceof Error ? error.message : String(error))
       setError("No se pudo leer de Cloudinary")
@@ -72,7 +75,7 @@ export function Dashboard() {
 
   useEffect( () => {
     getData()
-  }, [searchTerm])
+  }, [])
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -99,7 +102,7 @@ export function Dashboard() {
           />
           {
             loading 
-              ? <div className="w-full h-full flex justify-center mt-12 text-bold text-xl"><p>Loading...</p></div> 
+              ? <div className="w-full h-full flex justify-center mt-12 text-bold text-xl"><SkeltonFiles /></div> 
               
               : error 
                   ? <div className="w-full h-full flex justify-center mt-12 text-bold text-xl"><p>Error: {error}</p></div>
@@ -120,4 +123,29 @@ export function Dashboard() {
       <MainFooter />
     </div>
   )
+}
+
+const SkeltonFiles = () => {
+
+    return (
+      <div className="w-full px-4 pt-12">
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        
+        {
+          Array.from({ length: 10 }).map((_, index) => (
+            <div key={index} className="w-full h-[23rem] p-4 pt-14 pb-10 border border-border rounded-lg">
+
+            <Skeleton
+              className="w-full h-full rounded-none"
+            >
+              
+            </Skeleton>
+              </div>
+          ))
+        }
+        </div>
+
+      </div>
+    )
 }
