@@ -45,7 +45,7 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
     }))
   }
 
-  const handleSelectFolder = (folder: Folder) => {
+  const handleSelectFolder = (folder: Folder | null) => {
     onSelectFolder(folder)
   }
 
@@ -223,7 +223,7 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
 
       <div className="px-4 flex justify-between items-center">
         <span className="">Carpetas</span>
-        <Button variant="ghost" size="icon" onClick={() => handleSelectFolder(null)}>
+        <Button variant="ghost" size="icon" className="px-6" onClick={() => handleSelectFolder(null)}>
           Todas
         </Button>
       </div>

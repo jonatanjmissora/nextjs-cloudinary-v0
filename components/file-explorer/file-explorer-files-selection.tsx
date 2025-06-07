@@ -45,8 +45,8 @@ interface FileExplorerFilesSelectionProps {
   
   
     return (
-      <div className="min-h-12 flex justify-between items-center space-x-2">
-          <div>
+      <div className="min-h-8 flex justify-between items-center px-4">
+          <div className="flex items-center space-x-2">
             <Checkbox
               checked={isAllSelected}
               onCheckedChange={handleSelectAll}
@@ -70,9 +70,9 @@ interface FileExplorerFilesSelectionProps {
                 size="icon"
                 title="Copiar archivos seleccionados"
                 onClick={handleCopySelectedFiles}
-                className="hover:text-green-700"
+                className="hover:text-green-700 h-8"
               >
-                <Copy size={16} />
+                <Copy size={14} />
               </Button>
   
               <Button
@@ -80,9 +80,9 @@ interface FileExplorerFilesSelectionProps {
                 size="icon"
                 title="Eliminar archivos seleccionados"
                 onClick={handleBulkDelete}
-                className="hover:text-red-700"
+                className="hover:text-red-700 h-8"
               >
-                <Trash2 size={16} />
+                <Trash2 size={14} />
               </Button>
             </div>
           )}

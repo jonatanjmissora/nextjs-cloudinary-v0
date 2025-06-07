@@ -288,14 +288,12 @@ const ShowAllAssets = ({assets, handleFolderChange, folders}: {assets: Cloudinar
 
   return (
     <div className="flex-1 flex flex-col">
-      <div className="p-4 border-b border-border">
+      <div className="p-4">
         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
           <Home size={16} />
-          <span>Selecciona una carpeta para ver su contenido
-          </span>
         </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 overflow-auto px-4">
       {assets?.map((asset) => (
         <div
           key={asset.public_id}
