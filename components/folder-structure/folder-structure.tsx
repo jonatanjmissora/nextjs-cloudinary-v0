@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown, ChevronRight, FolderIcon, Plus, Trash2, Pencil, AlertTriangle, MoreVertical } from "lucide-react"
+import { ChevronDown, ChevronRight, FolderIcon, Plus, Trash2, Pencil, AlertTriangle, MoreVertical, FolderPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -228,6 +228,11 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
 
       <div className="px-4 flex justify-between items-center">
         <span className="">Carpetas</span>
+        <Button variant="ghost" size="icon" className="px-6" onClick={() => openCreateDialog(null)}>
+          <FolderPlus size={12} />
+        </Button>
+      </div>
+      <div className="px-4 flex justify-between items-center">
         <Button variant="ghost" size="icon" className="px-6" onClick={() => handleSelectFolder(null)}>
           Todas
         </Button>

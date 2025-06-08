@@ -4,7 +4,6 @@ import { useState, useCallback, useEffect } from "react"
 import { Header } from "@/components/header/header"
 import { FileExplorer } from "@/components/file-explorer/file-explorer"
 import type { CloudinaryAsset, Folder } from "@/lib/types"
-import { initialFolders } from "@/lib/mock-folders"
 import MainHeader from "./main-header"
 import { MainFooter } from "./main-footer"
 import { getInitialAssets } from "@/lib/utils"
@@ -137,7 +136,7 @@ const SkeltonFiles = () => {
             <div key={index} className="w-full h-[23rem] p-4 pt-14 pb-10 border border-border rounded-lg">
 
             <Skeleton
-              className="w-full h-full rounded-none"
+              className="w-full h-full sm:h-1/2 2xl:h-full rounded-none"
             >
               
             </Skeleton>
