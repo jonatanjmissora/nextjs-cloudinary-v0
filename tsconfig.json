@@ -5,6 +5,8 @@
       "dom.iterable",
       "es6"
     ],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

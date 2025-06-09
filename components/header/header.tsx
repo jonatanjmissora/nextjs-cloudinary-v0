@@ -6,8 +6,9 @@ import { useRef, type ChangeEvent } from "react"
 import { Search, Upload, Grid, List, SortAsc, Calendar, HardDrive, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import type { Folder, CustomFile } from "@/lib/types"
+import type { Folder, CustomFile, CloudinaryAsset } from "@/lib/types"
 import { getFileType } from "@/lib/utils"
+import { toast } from "@/hooks/use-toast"
 
 interface HeaderProps {
   searchQuery: string
@@ -19,7 +20,7 @@ interface HeaderProps {
   folders: Folder[]
   selectedFolder: Folder | null
   onFoldersUpdate: (folders: Folder[]) => void
-  onHandleNewUpload: any
+  onHandleNewUpload: (asset: CloudinaryAsset) => void
 }
 
 export function Header({
@@ -34,48 +35,49 @@ export function Header({
   onFoldersUpdate,
   onHandleNewUpload,
 }: HeaderProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  // const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (!files || !selectedFolder) return
+  // const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+  //   console.log("selectedFolder", selectedFolder)
+    // const files = event.target.files
+    // if (!files || !selectedFolder) return
 
-    const newFiles: CustomFile[] = Array.from(files).map((file) => ({
-      id: `file-${Date.now()}-${Math.random()}`,
-      name: file.name,
-      type: getFileType(file.name),
-      size: file.size,
-      lastModified: "Ahora",
-      format: file.name.split('.').pop()?.toLowerCase() || '',
-      secureUrl: '', 
-      width: 0, 
-      height: 0,
-    }))
+    // const newFiles: CustomFile[] = Array.from(files).map((file) => ({
+    //   id: `file-${Date.now()}-${Math.random()}`,
+    //   name: file.name,
+    //   type: getFileType(file.name),
+    //   size: file.size,
+    //   lastModified: "Ahora",
+    //   format: file.name.split('.').pop()?.toLowerCase() || '',
+    //   secureUrl: '', 
+    //   width: 0, 
+    //   height: 0,
+    // }))
 
-    // Actualizar la carpeta seleccionada con los nuevos archivos
-    const updatedFolders = folders.map((folder) => {
-      if (folder.id === selectedFolder.id) {
-        return {
-          ...folder,
-          files: [...folder.files, ...newFiles],
-        }
-      }
-      return folder
-    })
+    // // Actualizar la carpeta seleccionada con los nuevos archivos
+    // const updatedFolders = folders.map((folder) => {
+    //   if (folder.id === selectedFolder.id) {
+    //     return {
+    //       ...folder,
+    //       files: [...folder.files, ...newFiles],
+    //     }
+    //   }
+    //   return folder
+    // })
 
-    // Actualizar el estado
-    onFoldersUpdate(updatedFolders)
+    // // Actualizar el estado
+    // onFoldersUpdate(updatedFolders)
 
-    // Limpiar el input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
-  }
-  const handleUploadClick = () => {
-    if (selectedFolder && fileInputRef.current) {
-      fileInputRef.current.click()
-    }
-  }
+    // // Limpiar el input
+    // if (fileInputRef.current) {
+    //   fileInputRef.current.value = ""
+    // }
+  // }
+  // const handleUploadClick = () => {
+  //   if (selectedFolder && fileInputRef.current) {
+  //     fileInputRef.current.click()
+  //   }
+  // }
 
   return (
     <header className="border-b border-border p-4">
@@ -99,7 +101,14 @@ export function Header({
           <UploadButton onHandleNewUpload={onHandleNewUpload}/>
 
           {/* Input oculto para seleccionar archivos */}
-          <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileUpload} accept="*/*" />
+          {/* <input 
+            ref={fileInputRef} 
+            type="file" 
+             multiple 
+             className="hidden" 
+             onChange={handleFileUpload} 
+             />  */}
+            
         </div>
       </div>
 
@@ -156,16 +165,15 @@ export function Header({
   )
 }
 
-
-const UploadButton = ({onHandleNewUpload, selectedFolder}: any) => {
+const UploadButton = ({onHandleNewUpload}: {onHandleNewUpload: (asset: CloudinaryAsset) => void}) => {
   return (
     <CldUploadWidget
       uploadPreset="my-cloudinary"
       onSuccess={result => {
-          console.log(result)
-          onHandleNewUpload(result.info)
+          console.log(result.info)
+          // onHandleNewUpload(result.info)
       }}
-      onQueuesEnd={(result, { widget}) => {
+      onQueuesEnd={(_, { widget}) => {
           widget.close()
       }}
       >
@@ -174,15 +182,15 @@ const UploadButton = ({onHandleNewUpload, selectedFolder}: any) => {
               open()
           }
           return (
-            <Button
-            variant="outline"
-            onClick={handleOnClick}
-            title={!selectedFolder ? "Selecciona una carpeta primero" : "Subir archivo"}
-            className="flex items-center space-x-2"
-          >
-            <Upload size={18} />
-            <span>Subir archivos</span>
-          </Button>
+
+              <Button
+                variant="outline"
+                onClick={handleOnClick}
+                className="flex items-center space-x-2"
+                >
+                  <Upload size={18} />
+                  <span>Subir archivos</span>
+              </Button>
           )
       }}
   </CldUploadWidget>

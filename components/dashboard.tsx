@@ -78,7 +78,7 @@ export function Dashboard() {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <MainHeader />
+      <MainHeader/>
       <div className="flex-1 flex">
         <FolderStructure
           onSelectFolder={handleSelectFolder}
@@ -133,10 +133,10 @@ const SkeltonFiles = () => {
         
         {
           Array.from({ length: 10 }).map((_, index) => (
-            <div key={index} className="w-full h-[23rem] p-4 pt-14 pb-10 border border-border rounded-lg">
+            <div key={index} className="w-full h-[23rem] sm:h-[16rem] 2xl:h-[23rem] p-4 pt-14 pb-10 border border-border rounded-lg">
 
             <Skeleton
-              className="w-full h-full sm:h-1/2 2xl:h-full rounded-none"
+              className="w-full h-full rounded-none"
             >
               
             </Skeleton>

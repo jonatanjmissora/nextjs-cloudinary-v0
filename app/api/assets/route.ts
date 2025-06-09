@@ -9,11 +9,11 @@ cloudinary.config({
 
 export async function GET(request: Request) {
     try {
-        const { searchParams } = new URL(request.url)
-        const searchTerm = searchParams.get('search') || ''
+        // const { searchParams } = new URL(request.url)
+        // const searchTerm = searchParams.get('search') || ''
         
         const data = await cloudinary.search
-            .expression(searchTerm)
+            .expression()
             .execute()
         
         return NextResponse.json(data.resources)
