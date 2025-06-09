@@ -86,7 +86,7 @@ interface FileExplorerGridFilesProps {
           <div className="flex justify-center items-center">
             <Checkbox
               checked={selectedFiles.has(file.id)}
-              className="bg-background border-2"
+              className={`bg-background border-2 ${!selectedFiles.has(file.id) ? "opacity-0" : "opacity-50"}`}
             />
           </div>
 

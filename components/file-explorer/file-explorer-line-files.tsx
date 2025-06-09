@@ -40,6 +40,7 @@ interface FileExplorerLineFilesProps {
                         <td className="px-4">
                           <Checkbox
                             checked={selectedFiles.has(file.id)}
+                            className={`bg-background border-2 ${!selectedFiles.has(file.id) ? "opacity-0" : "opacity-50"}`}
                             // onCheckedChange={(checked) => onFileSelect(file.id, checked as boolean)}
                           />
                         </td>

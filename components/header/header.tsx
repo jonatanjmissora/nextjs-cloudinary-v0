@@ -71,7 +71,6 @@ export function Header({
       fileInputRef.current.value = ""
     }
   }
-
   const handleUploadClick = () => {
     if (selectedFolder && fileInputRef.current) {
       fileInputRef.current.click()
