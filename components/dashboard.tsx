@@ -78,15 +78,15 @@ export function Dashboard() {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <MainHeader/>
-      <div className="flex-1 flex">
+      <MainHeader />
+      <main className="flex-1 flex">
         <FolderStructure
           onSelectFolder={handleSelectFolder}
           selectedFolder={selectedFolder}
           onFoldersUpdate={handleFoldersUpdate}
           folders={folders}
         />
-        <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex flex-col">
           <Header
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
@@ -118,7 +118,7 @@ export function Dashboard() {
                   />
           }
         </div>
-      </div>
+      </main>
       <MainFooter />
     </div>
   )

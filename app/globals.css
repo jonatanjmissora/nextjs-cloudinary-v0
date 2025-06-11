@@ -59,6 +59,29 @@
   }
 }
 
+header {
+  height: 10dvh;
+}
+footer {
+  height: 5dvh;
+}
+main {
+  height: calc(100vh - 15dvh);
+}
+.dashboard-header {
+  height: 17dvh;
+}
+.dashboard-breadcrumb {
+  height: 6dvh;
+}
+.dashboard-file-selection {
+  height: 6dvh;
+}
+.dashboard-file-explorer {
+  height: calc(100dvh - 44dvh);
+  overflow-y: scroll;
+}
+
 .grid-container {
   display: grid;
   gap: 1rem;

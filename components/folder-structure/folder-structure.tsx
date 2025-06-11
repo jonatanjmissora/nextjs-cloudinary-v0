@@ -224,7 +224,7 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
   }
 
   return (
-    <div className="w-64 h-full border-r border-border flex flex-col bg-background">
+    <div className="w-64 min-h-full border-r border-border flex flex-col bg-background sm:text-xs 2xl:text-base">
 
       <div className="px-4 flex justify-between items-center">
         <span className="">Carpetas</span>

@@ -80,7 +80,7 @@ export function Header({
   // }
 
   return (
-    <header className="border-b border-border p-4">
+    <article className="border-b border-border p-4 dashboard-header">
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-center space-x-3 w-full">
           {/* Barra de búsqueda */}
@@ -161,7 +161,7 @@ export function Header({
           </Button>
         </div>
       </div>
-    </header>
+    </article>
   )
 }
 

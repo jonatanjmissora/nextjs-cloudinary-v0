@@ -44,9 +44,7 @@ export default function FileExplorerBreadcrumb({
   const breadcrumbPath = buildBreadcrumbPath(currentFolder)
 
   return (
-    <>
-        {/* Breadcrumb */}
-        <div className="p-4 flex justify-between items-center">
+        <div className="p-4 flex justify-between items-center dashboard-breadcrumb">
             <div className="flex items-center space-x-2 text-sm">
             {breadcrumbPath.map((pathFolder, index) => (
                 <div key={pathFolder.id} className="flex items-center space-x-2">
@@ -71,6 +69,5 @@ export default function FileExplorerBreadcrumb({
             </div>
             </div>
         </div>
-    </>
   )
 }

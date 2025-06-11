@@ -25,13 +25,13 @@ interface FileExplorerGridFilesProps {
     FileExplorerGridFilesProps) => {
 
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 dashboard-file-explorer">
         {sortedFiles.map((file) => (
           <div
             key={file.id}
             onClick={() => onFileSelect(file.id, !selectedFiles.has(file.id))}
             className={`group border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors relative ${selectedFiles.has(file.id) 
-              ? "bg-accent/30" 
+              ? "bg-yellow-500/30 border-yellow-500" 
               : ""
               }`}
           >

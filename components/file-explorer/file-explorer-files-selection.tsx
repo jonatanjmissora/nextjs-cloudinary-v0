@@ -45,7 +45,7 @@ interface FileExplorerFilesSelectionProps {
   
   
     return (
-      <div className="min-h-8 flex justify-between items-center px-4">
+      <div className="min-h-8 flex justify-between items-center px-4 dashboard-file-selection">
           <div className="flex items-center space-x-2">
             <Checkbox
               checked={isAllSelected}

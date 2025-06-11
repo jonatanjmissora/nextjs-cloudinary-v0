@@ -184,7 +184,7 @@ export function FileExplorer({
 
  
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex-1 flex flex-col">
       {/* Breadcrumb */}
       <FileExplorerBreadcrumb
         folders={folders}
@@ -195,7 +195,7 @@ export function FileExplorer({
       />
 
       {/* Contenido de archivos */}
-      <div className="flex-1 px-6 overflow-auto">
+      <div className="flex-1 px-6">
 
         {sortedFiles.length === 0 
             /* No hay archivos */
@@ -207,7 +207,7 @@ export function FileExplorer({
               </p>
             </div>
 
-          : <div className="space-y-4">
+          : <div className="flex-1">
               {/* Seleccion de archivos */}
               <FileExplorerFilesSelection 
                 sortedFiles={sortedFiles} 

@@ -16,7 +16,7 @@ interface FileExplorerLineFilesProps {
   
   export const FileExplorerLineFiles = ({ sortedFiles, selectedFiles, onFileSelect, currentFolderId, onRenameFile, onDeleteFile, onTransformFile }: FileExplorerLineFilesProps ) => {
     return (
-      <div className="space-y-4">
+      <div className="dashboard-file-explorer">
               {/* Barra de acciones para vista de lista */}
               <div className="border rounded-md overflow-hidden">
                 <table className="w-full">
@@ -34,7 +34,7 @@ interface FileExplorerLineFilesProps {
                       <tr
                         key={file.id}
                         onClick={() => onFileSelect(file.id, !selectedFiles.has(file.id))}
-                        className={`border-t border-border hover:bg-accent/50 group ${selectedFiles.has(file.id) ? "bg-accent/30" : ""
+                        className={`border-t border-border hover:bg-accent/50 group ${selectedFiles.has(file.id) ? "bg-yellow-500/30 border-yellow-500" : ""
                           }`}
                       >
                         <td className="px-4">
