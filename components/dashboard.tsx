@@ -8,6 +8,7 @@ import { MainFooter } from "./main-footer"
 import { getInitialAssets } from "@/lib/utils"
 import { FolderStructure } from "./folder-structure/folder-structure"
 import { Skeleton } from "./ui/skeleton"
+import FileExplorerBreadcrumb from "./file-explorer/file-explorer-breadcrumb"
 
 export function Dashboard() {
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
@@ -75,60 +76,104 @@ export function Dashboard() {
     getData()
   }, [])
 
+  if(loading) return <SkeletonFiles />
+
+  if(error) return (
+    <div className="w-full h-full flex justify-center mt-12 text-bold text-xl"><p>Error: {error}</p></div>
+  )
+
   return (
     <div className="flex flex-col h-screen bg-background">
+
       <MainHeader 
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            onHandleNewUpload={onHandleNewUpload}
-            />
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onHandleNewUpload={onHandleNewUpload}
+      />
+
       <main className="flex-1 flex">
+
         <FolderStructure
           onSelectFolder={handleSelectFolder}
           selectedFolder={selectedFolder}
           onFoldersUpdate={handleFoldersUpdate}
           folders={folders}
         />
-        <div className="flex flex-col">
 
-          <FileExplorerHeader />
+        <div className="flex-1 flex flex-col">
 
-          {
-            loading 
-              ? <SkeltonFiles />
-              
-              : error 
-                  ? <div className="w-full h-full flex justify-center mt-12 text-bold text-xl"><p>Error: {error}</p></div>
-                
-                  :
-                  <FileExplorer
-                    folder={selectedFolder}
-                    searchQuery={searchQuery}
-                    view={view}
-                    onViewChange={setView}
-                    sortBy={sortBy}
-                    onSortChange={setSortBy}
-                    folders={folders}
-                    onSelectFolder={handleSelectFolder}
-                    onFoldersUpdate={handleFoldersUpdate}
-                  />
-          }
+          <FileExplorerHeader 
+            folders={folders}
+            currentFolder={selectedFolder}
+            handleFolderChange={handleSelectFolder}
+            sortedFiles={selectedFolder?.files || []}
+            searchQuery={searchQuery}
+            view={view}
+            onViewChange={setView}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+          />
+          
+          <FileExplorer
+            folder={selectedFolder}
+            searchQuery={searchQuery}
+            view={view}
+            onViewChange={setView}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            folders={folders}
+            onSelectFolder={handleSelectFolder}
+            onFoldersUpdate={handleFoldersUpdate}
+          />
         </div>
+
       </main>
+
       <MainFooter />
     </div>
   )
 }
 
+interface FileExplorerBreadcrumbProps {
+  folders: Folder[]
+  currentFolder: Folder | null
+  handleFolderChange: (folder: Folder) => void
+  sortedFiles: CloudinaryAsset[]
+  searchQuery: string
+  view: "grid" | "list"
+  onViewChange: (view: "grid" | "list") => void
+  sortBy: "name" | "date" | "size"
+  onSortChange: (sortBy: "name" | "date" | "size") => void
+}
 
-const FileExplorerHeader = () => {
+const FileExplorerHeader = ({
+  folders,
+  currentFolder,
+  handleFolderChange,
+  sortedFiles,
+  searchQuery,
+  view,
+  onViewChange,
+  sortBy,
+  onSortChange,
+}: FileExplorerBreadcrumbProps) => {
   return(
-    <></>
+    <FileExplorerBreadcrumb
+      folders={folders}
+      currentFolder={currentFolder}
+      handleFolderChange={handleFolderChange}
+      sortedFiles={sortedFiles}
+      searchQuery={searchQuery}
+      view={view}
+      onViewChange={onViewChange}
+      sortBy={sortBy}
+      onSortChange={onSortChange}
+    />
   )
 }
 
 
-const SkeltonFiles = () => {
+const SkeletonFiles = () => {
 
     return (
       <div className="p-4 dashboard-file-explorer">

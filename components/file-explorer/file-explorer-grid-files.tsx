@@ -1,5 +1,4 @@
 import { CustomFile } from "@/lib/types";
-import { Checkbox } from "../ui/checkbox";
 import { FileActions } from "./file-explorer-actions";
 import { CldImage } from "next-cloudinary";
 import { setFileDate, setFileSize } from "@/lib/utils";

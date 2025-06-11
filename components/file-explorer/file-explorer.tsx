@@ -183,72 +183,62 @@ export function FileExplorer({
     setIsTransformFileDialogOpen(true)
   }
 
+  if(sortedFiles.length === 0) 
+    return (
+      <div className="text-center py-12 text-muted-foreground">
+        <p>
+          {searchQuery
+            ? `No se encontraron archivos que coincidan con "${searchQuery}"`
+            : "No hay archivos en esta carpeta"}
+        </p>
+      </div>
+    )
  
   return (
     <div className="flex-1 flex flex-col">
       {/* Breadcrumb */}
-      <FileExplorerBreadcrumb
-        folders={folders}
-        currentFolder={currentFolder}
-        handleFolderChange={handleFolderChange}
-        sortedFiles={sortedFiles}
-        searchQuery={searchQuery}
-        view={view}
-        onViewChange={onViewChange}
-        sortBy={sortBy}
-        onSortChange={onSortChange}
-      />
+      
 
       {/* Contenido de archivos */}
 
-        {sortedFiles.length === 0 
-            /* No hay archivos */
-          ? <div className="text-center py-12 text-muted-foreground">
-              <p>
-                {searchQuery
-                  ? `No se encontraron archivos que coincidan con "${searchQuery}"`
-                  : "No hay archivos en esta carpeta"}
-              </p>
-            </div>
+      <div className="flex-1">
+        {/* Seleccion de archivos */}
+        <FileExplorerFilesSelection 
+          sortedFiles={sortedFiles} 
+          selectedFiles={selectedFiles} 
+          setSelectedFiles={setSelectedFiles} 
+          setIsBulkDeleteDialogOpen={setIsBulkDeleteDialogOpen}
+        />
 
-          : <div className="flex-1">
-              {/* Seleccion de archivos */}
-              <FileExplorerFilesSelection 
-                sortedFiles={sortedFiles} 
-                selectedFiles={selectedFiles} 
-                setSelectedFiles={setSelectedFiles} 
-                setIsBulkDeleteDialogOpen={setIsBulkDeleteDialogOpen}
-              />
+        <div className="p-4 dashboard-file-explorer">
+          {
+            view === "grid" 
 
-              <div className="p-4 dashboard-file-explorer">
-                {
-                  view === "grid" 
+              /* Contenido de archivos en Grilla */
+              ? <FileExplorerGridFiles 
+                  sortedFiles={sortedFiles} 
+                  selectedFiles={selectedFiles} 
+                  onFileSelect={handleFileSelect} 
+                  currentFolderId={currentFolder.id} 
+                  onRenameFile={handleRenameFile}
+                  onDeleteFile={handleDeleteFile}
+                  onTransformFile={handleTransformFile}
+                />
 
-                    /* Contenido de archivos en Grilla */
-                    ? <FileExplorerGridFiles 
-                        sortedFiles={sortedFiles} 
-                        selectedFiles={selectedFiles} 
-                        onFileSelect={handleFileSelect} 
-                        currentFolderId={currentFolder.id} 
-                        onRenameFile={handleRenameFile}
-                        onDeleteFile={handleDeleteFile}
-                        onTransformFile={handleTransformFile}
-                      />
-
-                      /* Contenido de archivos en linea */
-                    : <FileExplorerLineFiles 
-                        sortedFiles={sortedFiles} 
-                        selectedFiles={selectedFiles} 
-                        onFileSelect={handleFileSelect} 
-                        currentFolderId={currentFolder.id} 
-                        onRenameFile={handleRenameFile}
-                        onDeleteFile={handleDeleteFile}
-                        onTransformFile={handleTransformFile}
-                      />
-                }
-              </div>
-            </div>
-        }
+                /* Contenido de archivos en linea */
+              : <FileExplorerLineFiles 
+                  sortedFiles={sortedFiles} 
+                  selectedFiles={selectedFiles} 
+                  onFileSelect={handleFileSelect} 
+                  currentFolderId={currentFolder.id} 
+                  onRenameFile={handleRenameFile}
+                  onDeleteFile={handleDeleteFile}
+                  onTransformFile={handleTransformFile}
+                />
+          }
+        </div>
+      </div>
+        
 
       {/* Diálogos */}
       <RenameFileDialog
