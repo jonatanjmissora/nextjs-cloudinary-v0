@@ -38,10 +38,10 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
 
   // const rootFolders = folders.filter((folder) => folder.parentId === null)
 
-  if(!folders) 
-    return <div className="w-64 h-full border-r border-border flex justify-center pt-12 bg-background">
-      <p>Loading...</p>
-    </div>
+  // if(!folders) 
+  //   return <div className="h-full border-r border-border flex justify-center pt-12 bg-background dashboard-folder-structure">
+  //     <p>Loading...</p>
+  //   </div>
 
   const toggleFolder = (folderId: string) => {
     setExpandedFolders((prev) => ({
@@ -183,7 +183,7 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
           >
             {expandedFolders[folder.id] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
           </button>
-          <FolderIcon size={18} className="mr-2 text-yellow-500" />
+          <FolderIcon size={18} className="mr-2 text-primary" />
           <span className="flex-1 truncate">{folder.name}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -224,7 +224,7 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
   }
 
   return (
-    <div className="w-64 min-h-full border-r border-border flex flex-col bg-background sm:text-xs 2xl:text-base">
+    <div className="flex flex-col bg-background sm:text-xs 2xl:text-base dashboard-folder-structure">
 
       <div className="px-4 flex justify-between items-center">
         <span className="">Carpetas</span>
@@ -232,12 +232,12 @@ export function FolderStructure({ onSelectFolder, selectedFolder, onFoldersUpdat
           <FolderPlus size={12} />
         </Button>
       </div>
-      <div className="px-4 flex justify-between items-center">
-        <Button variant="ghost" size="icon" className="px-6" onClick={() => handleSelectFolder(null)}>
-          Todas
+      <div className=" flex justify-between items-center w-full">
+        <Button variant="ghost" size="icon" className="w-full" onClick={() => handleSelectFolder(null)}>
+          <span className="px-4 text-base w-full text-left">Todas</span>
         </Button>
       </div>
-      <div className="flex-1 overflow-y-auto p-2">{renderFolderTree(null)}</div>
+      <div className="flex-1 overflow-y-auto">{renderFolderTree(null)}</div>
 
       {/* Diálogo para crear carpeta */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>

@@ -13,26 +13,12 @@ import { toast } from "@/hooks/use-toast"
 interface HeaderProps {
   searchQuery: string
   onSearchChange: (query: string) => void
-  view: "grid" | "list"
-  onViewChange: (view: "grid" | "list") => void
-  sortBy: "name" | "date" | "size"
-  onSortChange: (sort: "name" | "date" | "size") => void
-  folders: Folder[]
-  selectedFolder: Folder | null
-  onFoldersUpdate: (folders: Folder[]) => void
   onHandleNewUpload: (asset: CloudinaryAsset) => void
 }
 
 export function Header({
   searchQuery,
   onSearchChange,
-  view,
-  onViewChange,
-  sortBy,
-  onSortChange,
-  folders,
-  selectedFolder,
-  onFoldersUpdate,
   onHandleNewUpload,
 }: HeaderProps) {
   // const fileInputRef = useRef<HTMLInputElement>(null)
@@ -80,7 +66,7 @@ export function Header({
   // }
 
   return (
-    <article className="border-b border-border p-4 dashboard-header">
+    <article className="p-4 dashboard-header">
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-center space-x-3 w-full">
           {/* Barra de búsqueda */}
@@ -99,66 +85,7 @@ export function Header({
 
           {/* Botón de subir archivos con texto */}
           <UploadButton onHandleNewUpload={onHandleNewUpload}/>
-
-          {/* Input oculto para seleccionar archivos */}
-          {/* <input 
-            ref={fileInputRef} 
-            type="file" 
-             multiple 
-             className="hidden" 
-             onChange={handleFileUpload} 
-             />  */}
             
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between mt-4">
-        {/* Botones de vista - solo iconos */}
-        <div className="flex items-center space-x-2">
-          <Button
-            variant={view === "grid" ? "default" : "ghost"}
-            size="icon"
-            onClick={() => onViewChange("grid")}
-            title="Vista de cuadrícula"
-          >
-            <Grid size={16} />
-          </Button>
-          <Button
-            variant={view === "list" ? "default" : "ghost"}
-            size="icon"
-            onClick={() => onViewChange("list")}
-            title="Vista de lista"
-          >
-            <List size={16} />
-          </Button>
-        </div>
-
-        {/* Botones de ordenamiento - iconos */}
-        <div className="flex items-center space-x-2">
-          <Button
-            variant={sortBy === "name" ? "default" : "ghost"}
-            size="icon"
-            onClick={() => onSortChange("name")}
-            title="Ordenar por nombre"
-          >
-            <SortAsc size={16} />
-          </Button>
-          <Button
-            variant={sortBy === "date" ? "default" : "ghost"}
-            size="icon"
-            onClick={() => onSortChange("date")}
-            title="Ordenar por fecha"
-          >
-            <Calendar size={16} />
-          </Button>
-          <Button
-            variant={sortBy === "size" ? "default" : "ghost"}
-            size="icon"
-            onClick={() => onSortChange("size")}
-            title="Ordenar por tamaño"
-          >
-            <HardDrive size={16} />
-          </Button>
         </div>
       </div>
     </article>

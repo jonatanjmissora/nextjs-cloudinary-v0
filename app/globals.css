@@ -10,7 +10,7 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    --primary: 37.037 100% 48%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -24,6 +24,16 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+
+    /* layout */
+    --header-h: 12dvh;
+    --footer-h: 5dvh;
+    --main-h: calc(100dvh - var(--header-h) - var(--footer-h));
+    --dashboard-breadcrumb-h: 4dvh;
+    --dashboard-file-selection-h: 4dvh;
+    --dashboard-file-explorer-h: calc(var(--main-h) - var(--dashboard-breadcrumb-h) - var(--dashboard-file-selection-h));
+    --dashboard-folder-structure-w: 16rem;
+    --dashboard-file-explorer-w: calc(100dvw - var(--dashboard-folder-structure-w));
   }
 
   .dark {
@@ -33,7 +43,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
+    --primary: 37.037 100% 48%;
     --primary-foreground: 240 5.9% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -60,29 +70,37 @@
 }
 
 header {
-  height: 10dvh;
+  height: var(--header-h);
 }
 footer {
-  height: 5dvh;
+  height: var(--footer-h);
 }
 main {
-  height: calc(100vh - 15dvh);
+  height: var(--main-h);
 }
 .dashboard-header {
-  height: 17dvh;
+  height: var(--dashboard-header-h);
 }
 .dashboard-breadcrumb {
-  height: 6dvh;
+  height: var(--dashboard-breadcrumb-h);
 }
 .dashboard-file-selection {
-  height: 6dvh;
+  height: var(--dashboard-file-selection-h);
 }
 .dashboard-file-explorer {
-  height: calc(100dvh - 44dvh);
+  height: var(--dashboard-file-explorer-h);
   overflow-y: scroll;
 }
 
-.grid-container {
+.dashboard-folder-structure {
+  width: var(--dashboard-folder-structure-w);
+}
+.dashboard-file-explorer {
+  width: var(--dashboard-file-explorer-w);
+}
+
+
+/* .grid-container {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -95,4 +113,4 @@ main {
 
 .grid-container img:hover {
   transform: scale(1.05);
-}
+} */

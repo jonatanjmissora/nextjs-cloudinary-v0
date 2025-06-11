@@ -1,17 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { Home } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast"
-import type { Folder, CustomFile, CloudinaryAsset } from "@/lib/types"
+import type { Folder, CustomFile } from "@/lib/types"
 import { RenameFileDialog, DeleteFileDialog, BulkDeleteDialog } from "./file-explorer-dialog"
 import FileExplorerBreadcrumb from "./file-explorer-breadcrumb"
 import { FileExplorerFilesSelection } from "./file-explorer-files-selection"
 import { FileExplorerGridFiles } from "./file-explorer-grid-files"
 import { FileExplorerLineFiles } from "./file-explorer-line-files"
 import TrasnformFileDialog from "./file-explorer-transformation"
-import { CldImage } from "next-cloudinary"
-import { setFileDate, setFileSize } from "@/lib/utils"
 
 interface FileExplorerProps {
   folder: Folder | null
@@ -21,6 +18,8 @@ interface FileExplorerProps {
   folders: Folder[]
   onSelectFolder: (folder: Folder) => void
   onFoldersUpdate: (folders: Folder[]) => void
+  onViewChange: (view: "grid" | "list") => void
+  onSortChange: (sortBy: "name" | "date" | "size") => void
 }
 
 export function FileExplorer({
@@ -31,6 +30,8 @@ export function FileExplorer({
   folders,
   onSelectFolder,
   onFoldersUpdate,
+  onViewChange,
+  onSortChange
 }: FileExplorerProps) {
   const [isRenameFileDialogOpen, setIsRenameFileDialogOpen] = useState(false)
   const [isDeleteFileDialogOpen, setIsDeleteFileDialogOpen] = useState(false)
@@ -192,10 +193,13 @@ export function FileExplorer({
         handleFolderChange={handleFolderChange}
         sortedFiles={sortedFiles}
         searchQuery={searchQuery}
+        view={view}
+        onViewChange={onViewChange}
+        sortBy={sortBy}
+        onSortChange={onSortChange}
       />
 
       {/* Contenido de archivos */}
-      <div className="flex-1 px-6">
 
         {sortedFiles.length === 0 
             /* No hay archivos */
@@ -216,34 +220,35 @@ export function FileExplorer({
                 setIsBulkDeleteDialogOpen={setIsBulkDeleteDialogOpen}
               />
 
-              {
-                view === "grid" 
+              <div className="p-4 dashboard-file-explorer">
+                {
+                  view === "grid" 
 
-                  /* Contenido de archivos en Grilla */
-                  ? <FileExplorerGridFiles 
-                      sortedFiles={sortedFiles} 
-                      selectedFiles={selectedFiles} 
-                      onFileSelect={handleFileSelect} 
-                      currentFolderId={currentFolder.id} 
-                      onRenameFile={handleRenameFile}
-                      onDeleteFile={handleDeleteFile}
-                      onTransformFile={handleTransformFile}
-                    />
+                    /* Contenido de archivos en Grilla */
+                    ? <FileExplorerGridFiles 
+                        sortedFiles={sortedFiles} 
+                        selectedFiles={selectedFiles} 
+                        onFileSelect={handleFileSelect} 
+                        currentFolderId={currentFolder.id} 
+                        onRenameFile={handleRenameFile}
+                        onDeleteFile={handleDeleteFile}
+                        onTransformFile={handleTransformFile}
+                      />
 
-                    /* Contenido de archivos en linea */
-                  : <FileExplorerLineFiles 
-                      sortedFiles={sortedFiles} 
-                      selectedFiles={selectedFiles} 
-                      onFileSelect={handleFileSelect} 
-                      currentFolderId={currentFolder.id} 
-                      onRenameFile={handleRenameFile}
-                      onDeleteFile={handleDeleteFile}
-                      onTransformFile={handleTransformFile}
-                    />
-              }
+                      /* Contenido de archivos en linea */
+                    : <FileExplorerLineFiles 
+                        sortedFiles={sortedFiles} 
+                        selectedFiles={selectedFiles} 
+                        onFileSelect={handleFileSelect} 
+                        currentFolderId={currentFolder.id} 
+                        onRenameFile={handleRenameFile}
+                        onDeleteFile={handleDeleteFile}
+                        onTransformFile={handleTransformFile}
+                      />
+                }
+              </div>
             </div>
         }
-      </div>
 
       {/* Diálogos */}
       <RenameFileDialog

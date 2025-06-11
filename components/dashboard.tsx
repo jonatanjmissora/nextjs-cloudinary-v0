@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useCallback, useEffect } from "react"
-import { Header } from "@/components/header/header"
 import { FileExplorer } from "@/components/file-explorer/file-explorer"
 import type { CloudinaryAsset, Folder } from "@/lib/types"
 import MainHeader from "./main-header"
@@ -78,7 +77,11 @@ export function Dashboard() {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <MainHeader />
+      <MainHeader 
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onHandleNewUpload={onHandleNewUpload}
+            />
       <main className="flex-1 flex">
         <FolderStructure
           onSelectFolder={handleSelectFolder}
@@ -87,21 +90,12 @@ export function Dashboard() {
           folders={folders}
         />
         <div className="flex flex-col">
-          <Header
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            view={view}
-            onViewChange={setView}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-            folders={folders}
-            selectedFolder={selectedFolder}
-            onFoldersUpdate={handleFoldersUpdate}
-            onHandleNewUpload={onHandleNewUpload}
-          />
+
+          <FileExplorerHeader />
+
           {
             loading 
-              ? <div className="w-full h-full flex justify-center mt-12 text-bold text-xl"><SkeltonFiles /></div> 
+              ? <SkeltonFiles />
               
               : error 
                   ? <div className="w-full h-full flex justify-center mt-12 text-bold text-xl"><p>Error: {error}</p></div>
@@ -111,7 +105,9 @@ export function Dashboard() {
                     folder={selectedFolder}
                     searchQuery={searchQuery}
                     view={view}
+                    onViewChange={setView}
                     sortBy={sortBy}
+                    onSortChange={setSortBy}
                     folders={folders}
                     onSelectFolder={handleSelectFolder}
                     onFoldersUpdate={handleFoldersUpdate}
@@ -124,26 +120,34 @@ export function Dashboard() {
   )
 }
 
+
+const FileExplorerHeader = () => {
+  return(
+    <></>
+  )
+}
+
+
 const SkeltonFiles = () => {
 
     return (
-      <div className="w-full px-4 pt-12">
+      <div className="p-4 dashboard-file-explorer">
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        
-        {
-          Array.from({ length: 10 }).map((_, index) => (
-            <div key={index} className="w-full h-[23rem] sm:h-[16rem] 2xl:h-[23rem] p-4 pt-14 pb-10 border border-border rounded-lg">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          
+          {
+            Array.from({ length: 10 }).map((_, index) => (
+              <div key={index} className="w-full h-[23rem] sm:h-[16rem] 2xl:h-[23rem] p-4 pt-14 pb-10 border border-border rounded-lg">
 
-            <Skeleton
-              className="w-full h-full rounded-none"
-            >
-              
-            </Skeleton>
-              </div>
-          ))
-        }
-        </div>
+              <Skeleton
+                className="w-full h-full rounded-none"
+              >
+                
+              </Skeleton>
+                </div>
+            ))
+          }
+          </div>
 
       </div>
     )
